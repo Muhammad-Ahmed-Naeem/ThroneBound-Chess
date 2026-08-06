@@ -49,3 +49,11 @@
 - **BoardState Responsibility:** Manages the active pieces on a 1D 64-element array backing the 8x8 board. Handles initialization of the standard chess position, placing, retrieving, and removing pieces.
 - **Currently Supported:** Empty board representation, valid piece configuration, specific positions, bounds checking, and test script verification (`test_board_state.gd`).
 - **Intentionally Excluded:** Legal move generation, captures, check/checkmate logic, castling, en passant, promotion, presentation, AI, UI, and multiplayer.
+
+## 8. Milestone 2: Move Representation & Pseudo-Legal Move Generation
+- **Move Representation:** `ChessMove` acts purely as an immutable data container describing `from_position`, `to_position`, `moving_piece`, and a nullable `captured_piece`. It does not contain presentation or UI data.
+- **MoveGenerator Responsibility:** Generates pseudo-legal moves for any given position using `generate_moves(board, pos)`. It calculates movement according to standard bounds, occupancy, and piece-specific patterns.
+- **Immutability:** Move generation strictly reads from `BoardState` and returns an array of `ChessMove`s without mutating the board state.
+- **Pseudo-Legal vs Legal:** This tier exclusively computes **pseudo-legal** moves (i.e. physical board movement capability). It strictly avoids check/King-safety detection.
+- **Supported Mechanics:** Bounds checking, blocking logic (friendly collision, enemy capture), sliding logic (Bishop, Rook, Queen), jumping (Knight), single step (King), Pawn (forward step, double step from starting rank, diagonal captures).
+- **Intentionally Excluded Mechanics:** King-safety filtering, Check/Checkmate, Stalemate, Castling, En passant, Promotion, move execution (state mutation), AI evaluation, and all visual/audio presentation.
