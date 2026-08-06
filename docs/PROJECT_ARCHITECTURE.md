@@ -57,3 +57,12 @@
 - **Pseudo-Legal vs Legal:** This tier exclusively computes **pseudo-legal** moves (i.e. physical board movement capability). It strictly avoids check/King-safety detection.
 - **Supported Mechanics:** Bounds checking, blocking logic (friendly collision, enemy capture), sliding logic (Bishop, Rook, Queen), jumping (Knight), single step (King), Pawn (forward step, double step from starting rank, diagonal captures).
 - **Intentionally Excluded Mechanics:** King-safety filtering, Check/Checkmate, Stalemate, Castling, En passant, Promotion, move execution (state mutation), AI evaluation, and all visual/audio presentation.
+
+## 9. Milestone 3: Move Execution, Turn State & King Safety
+- **Move Execution Responsibility:** `MoveExecutor` acts as the sole mutator for the board. It permanently places/removes pieces to reflect a played move.
+- **Reversible Simulation:** `simulate_move` returns an opaque `UndoRecord` holding original state. `restore_move` uses it to perfectly rollback the board state without any leakage.
+- **Attack Detection:** `ChessRules` independently calculates piece threats against specific squares regardless of legal movement constraints (e.g. independently computing Pawn forward diagonals).
+- **Check Detection & King Location:** Consistently maps the King via dynamic lookup (`find_king`) avoiding duplicated state, and verifies if it is threatened via attack detection.
+- **Legal Move Filtering:** `ChessRules` encapsulates pseudo-legal generation, simulates every move, flags any move leaving the King under attack (such as exposing pinned pieces), and discards it.
+- **Turn Responsibility:** `TurnManager` oversees side ownership and toggling (`WHITE` vs `BLACK`).
+- **Intentionally Excluded Rules:** Checkmate, Stalemate, Castling, En passant, Promotion, draw rules, AI, and all presentation/UI systems remain explicitly deferred.
