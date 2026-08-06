@@ -66,3 +66,13 @@
 - **Legal Move Filtering:** `ChessRules` encapsulates pseudo-legal generation, simulates every move, flags any move leaving the King under attack (such as exposing pinned pieces), and discards it.
 - **Turn Responsibility:** `TurnManager` oversees side ownership and toggling (`WHITE` vs `BLACK`).
 - **Intentionally Excluded Rules:** Checkmate, Stalemate, Castling, En passant, Promotion, draw rules, AI, and all presentation/UI systems remain explicitly deferred.
+
+## 10. Milestone 4: Complete Chess Rules
+- **Game History:** `GameHistory` tracks contextual variables (Castling rights, En Passant targets, halfmove clock, and position keys). Its `push_state()` and `pop_state()` allow flawlessly reversing mutations during simulation.
+- **Special Move Types:** `ChessMove` now encodes `MoveType` (Normal, Castle, En Passant, Promotion) and `promotion_type`.
+- **En Passant:** Computed dynamically, matching a valid double-step target logged inside `GameHistory` and clearing properly after one turn.
+- **Castling Safety & Rights:** Rights are rigorously enforced and revoked correctly when Kings/Rooks move or are captured. Through-check and in-check limits are tested and explicitly blocked.
+- **Promotion:** Safely translates pawns reaching terminal ranks to Queen, Rook, Bishop, or Knight, ensuring simulation cleanly rewinds the morphed `PieceType`.
+- **Game Endings:** Implemented strict rule separation to detect Checkmate (in check + 0 legal moves) versus Stalemate (not in check + 0 legal moves).
+- **Draw States:** Added explicit methods to verify Automatic Draws via Insufficient Material (K vs K, K+N vs K, K+B vs K) and Claimable Draws (Fifty-move rule via halfmove clock, Threefold Repetition tracking via position hashing). 
+- **Intentionally Excluded:** UI overlays, AI logic, 3D presentations, and online networking remain explicitly excluded to maintain headless correctness.
