@@ -83,3 +83,11 @@
 - **Execution Pipeline:** `try_move()` generates purely legal moves internally, validates the requested move via `to_position` and `promotion_type`, invokes `MoveExecutor`, modifies `TurnManager`, records resulting `GameHistory`, and re-evaluates `_evaluate_terminal_state()`.
 - **Signal Boundary:** Emits a `move_executed(move: ChessMove)` signal post-success to bridge the core simulation logically cleanly out to the future Presentation Layer.
 - **Move History:** A clean array of successfully executed `ChessMove` entries is maintained on the orchestrator, containing pure data representation devoid of presentation bindings.
+
+## 12. Milestone 6: 3D Presentation Foundation
+- **Dependency Direction:** The Presentation Layer strictly observes the `ChessGame`. It does not calculate move legality, check status, or draw rules. `Chess Core -> Presentation`.
+- **Mathematical Picking:** Uses `Plane(Vector3.UP, 0.0).intersects_ray(origin, normal)` to perform input detection against the mathematical XZ plane instead of utilizing expensive Physics/Collider bodies.
+- **BoardView:** Orchestrates the 3D generation of squares and pieces and handles mouse interactions. It intercepts clicks, builds requests, and delegates them to `ChessGame.try_move()`.
+- **PieceController:** Manages purely the visual instantiation and mesh updates (e.g. promoting mesh shape). Driven entirely by the `BoardView` synchronizing its list of active logical pieces.
+- **MoveVisualizer:** Receives an array of `ChessMove` instances from `ChessGame` when a piece is clicked, and paints flat planes over target squares (green for normal, red for capture) independent of rules engines.
+- **Intentionally Deferred:** No animations, complex UI, settings, Stockfish, or polished VFX are added. The goal is technical validation of the core bridge logic.
