@@ -76,3 +76,10 @@
 - **Game Endings:** Implemented strict rule separation to detect Checkmate (in check + 0 legal moves) versus Stalemate (not in check + 0 legal moves).
 - **Draw States:** Added explicit methods to verify Automatic Draws via Insufficient Material (K vs K, K+N vs K, K+B vs K) and Claimable Draws (Fifty-move rule via halfmove clock, Threefold Repetition tracking via position hashing). 
 - **Intentionally Excluded:** UI overlays, AI logic, 3D presentations, and online networking remain explicitly excluded to maintain headless correctness.
+
+## 11. Milestone 5: Chess Game Flow
+- **ChessGame Orchestrator:** Acts as the primary facade joining `BoardState`, `GameHistory`, `TurnManager`, `ChessRules`, and `MoveExecutor`. It provides a high-level API (`try_move`, `get_legal_moves`, `get_game_result`) to drive a match without duplicating internal core logic.
+- **MoveResult & GameResult:** `try_move()` returns explicit `MoveResult` values (`SUCCESS`, `GAME_OVER`, `INVALID_SOURCE`, `WRONG_TURN`, `ILLEGAL_MOVE`, `INVALID_PROMOTION`) rather than relying on exceptions. `GameResult` tracks states like `CHECKMATE`, `STALEMATE`, and `DRAW_*` cleanly.
+- **Execution Pipeline:** `try_move()` generates purely legal moves internally, validates the requested move via `to_position` and `promotion_type`, invokes `MoveExecutor`, modifies `TurnManager`, records resulting `GameHistory`, and re-evaluates `_evaluate_terminal_state()`.
+- **Signal Boundary:** Emits a `move_executed(move: ChessMove)` signal post-success to bridge the core simulation logically cleanly out to the future Presentation Layer.
+- **Move History:** A clean array of successfully executed `ChessMove` entries is maintained on the orchestrator, containing pure data representation devoid of presentation bindings.
