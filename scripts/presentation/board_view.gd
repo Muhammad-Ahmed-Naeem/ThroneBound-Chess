@@ -10,6 +10,9 @@ var _selected_pos: Vector2i = Vector2i(-1, -1)
 var _legal_moves_cache: Array[ChessMove] = []
 var _pieces: Dictionary = {} # Maps Vector2i -> PieceController
 
+var _is_animating: bool = false
+var _animations_pending: int = 0
+
 func _ready() -> void:
 	_game = ChessGame.new()
 	_game.move_executed.connect(_on_move_executed)
@@ -48,30 +51,51 @@ func _generate_pieces() -> void:
 		pc.setup(p, SQUARE_SIZE)
 		_pieces[p.position] = pc
 
-func _on_move_executed(_move: ChessMove) -> void:
-	_sync_pieces()
+func _on_move_executed(move: ChessMove) -> void:
+	_is_animating = true
+	_visualizer.show_last_move(move, SQUARE_SIZE)
 	_clear_selection()
 	
-	if _game.is_game_over():
-		print("Game Over! Result: ", _game.get_game_result())
-
-func _sync_pieces() -> void:
 	var board_state = _game.get_board()
 	var current_logical_pieces = board_state.get_all_pieces()
 	
 	var old_pieces = _pieces.values()
 	_pieces.clear()
+	_animations_pending = 0
 	
 	for pc in old_pieces:
 		if current_logical_pieces.has(pc.logical_piece):
-			# Still on board. Update position and potential promotion type changes.
-			pc.update_visuals(SQUARE_SIZE)
+			var new_world = chess_to_world(pc.logical_piece.position)
+			# We check flat distance to avoid float precision issues with Y offsets
+			var flat_old = Vector2(pc.position.x, pc.position.z)
+			var flat_new = Vector2(new_world.x, new_world.z)
+			if flat_old.distance_to(flat_new) > 0.1:
+				_animations_pending += 1
+				pc.move_completed.connect(_on_piece_animation_done, CONNECT_ONE_SHOT)
+				pc.move_to(pc.logical_piece.position, SQUARE_SIZE)
+			else:
+				pc.update_visuals(SQUARE_SIZE)
+				
 			_pieces[pc.logical_piece.position] = pc
 		else:
-			# Captured or removed via En Passant!
-			pc.queue_free()
+			_animations_pending += 1
+			pc.capture_completed.connect(_on_piece_animation_done, CONNECT_ONE_SHOT)
+			pc.animate_capture()
+			
+	if _animations_pending == 0:
+		_on_piece_animation_done()
+
+func _on_piece_animation_done() -> void:
+	if _animations_pending > 0:
+		_animations_pending -= 1
+	if _animations_pending == 0:
+		_is_animating = false
+		if _game.is_game_over():
+			print("Game Over! Result: ", _game.get_game_result())
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _is_animating: return
+	
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var camera = get_viewport().get_camera_3d()
 		if not camera: return
@@ -112,10 +136,15 @@ func _handle_square_click(pos: Vector2i) -> void:
 	var clicked_piece = _game.get_board().get_piece(pos)
 	if clicked_piece != null and clicked_piece.color == _game.get_current_turn():
 		_selected_pos = pos
+		if _pieces.has(pos):
+			_pieces[pos].set_selected(true)
 		_legal_moves_cache = _game.get_legal_moves_for_square(pos)
 		_visualizer.show_legal_moves(_legal_moves_cache, SQUARE_SIZE)
 
 func _clear_selection() -> void:
+	if _selected_pos != Vector2i(-1, -1) and _pieces.has(_selected_pos):
+		_pieces[_selected_pos].set_selected(false)
+		
 	_selected_pos = Vector2i(-1, -1)
 	_legal_moves_cache.clear()
 	_visualizer.clear_visuals()

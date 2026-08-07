@@ -91,3 +91,11 @@
 - **PieceController:** Manages purely the visual instantiation and mesh updates (e.g. promoting mesh shape). Driven entirely by the `BoardView` synchronizing its list of active logical pieces.
 - **MoveVisualizer:** Receives an array of `ChessMove` instances from `ChessGame` when a piece is clicked, and paints flat planes over target squares (green for normal, red for capture) independent of rules engines.
 - **Intentionally Deferred:** No animations, complex UI, settings, Stockfish, or polished VFX are added. The goal is technical validation of the core bridge logic.
+
+## 13. Milestone 7: Presentation Smoothness & Visual Feedback
+- **Tween-based Movement:** `PieceController` replaces instant translation with mathematical Tween interpolation. It interpolates its logical path over 0.25 seconds.
+- **Selection Feedback:** `BoardView` instructs selected pieces to elevate slightly along the Y-axis via Tweening to clearly indicate active selection.
+- **Input Locking:** `BoardView` strictly ignores all new `_unhandled_input` while `_is_animating` is true, ensuring rapid or overlapping clicks do not desync the visual interpolations.
+- **Capture Response:** Captured pieces undergo a rapid scaling Tween to zero via `Tween.TRANS_BACK` before being freed. A generic response designed solely for prototype clarity.
+- **Last Move Highlighting:** Added subtle yellow planes tracking the `from` and `to` positions of the previously executed `ChessMove` to aid logical readability.
+- **Synchronization Strategy:** Leveraged Godot's `Signal` pipeline dynamically binding to `move_completed` to await dynamic tween lengths without blocking `ChessGame`'s headless simulation capability.
