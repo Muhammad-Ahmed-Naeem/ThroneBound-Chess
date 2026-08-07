@@ -14,6 +14,8 @@ var _is_animating: bool = false
 var _animations_pending: int = 0
 var _graveyard_white: Array[PieceController] = []
 var _graveyard_black: Array[PieceController] = []
+const CaptureManager = preload("res://scripts/presentation/capture_presentation_manager.gd")
+var _capture_manager: CaptureManager
 
 func _ready() -> void:
 	_game = ChessGame.new()
@@ -22,6 +24,9 @@ func _ready() -> void:
 	
 	_visualizer = MoveVisualizer.new()
 	add_child(_visualizer)
+	
+	_capture_manager = CaptureManager.new()
+	add_child(_capture_manager)
 	
 	_generate_board()
 	_generate_pieces()
@@ -73,38 +78,83 @@ func _on_move_executed(move: ChessMove) -> void:
 	var board_state = _game.get_board()
 	var current_logical_pieces = board_state.get_all_pieces()
 	
-	var old_pieces = _pieces.values()
+	var old_pieces_list = _pieces.values()
 	_pieces.clear()
 	_animations_pending = 0
 	
-	for pc in old_pieces:
-		if current_logical_pieces.has(pc.logical_piece):
-			var new_world = chess_to_world(pc.logical_piece.position)
-			var flat_old = Vector2(pc.position.x, pc.position.z)
-			var flat_new = Vector2(new_world.x, new_world.z)
-			if flat_old.distance_to(flat_new) > 0.1:
-				_animations_pending += 1
-				pc.move_completed.connect(_on_piece_animation_done, CONNECT_ONE_SHOT)
-				pc.move_to(pc.logical_piece.position, SQUARE_SIZE)
-			else:
-				pc.update_visuals(SQUARE_SIZE)
+	var attacker_pc: PieceController = null
+	var defender_pc: PieceController = null
+	
+	if move.captured_piece != null:
+		# Find the exact nodes for attacker and defender
+		for pc in old_pieces_list:
+			if pc.logical_piece.position == move.from_position:
+				attacker_pc = pc
+			if pc.logical_piece.position == move.captured_piece.position:
+				defender_pc = pc
 				
-			_pieces[pc.logical_piece.position] = pc
+	# Reconcile new logical state with visual pieces
+	for new_logical in current_logical_pieces:
+		var pc: PieceController = null
+		
+		if new_logical.position == move.to_position and attacker_pc != null:
+			pc = attacker_pc
+			pc.logical_piece = new_logical
 		else:
+			for old_pc in old_pieces_list:
+				if old_pc.logical_piece == new_logical:
+					pc = old_pc
+					break
+			# Handle non-capturing promotion (new logical piece on destination, old pawn on source)
+			if pc == null and new_logical.position == move.to_position:
+				for old_pc in old_pieces_list:
+					if old_pc.logical_piece.position == move.from_position:
+						pc = old_pc
+						pc.logical_piece = new_logical
+						break
+						
+		if pc == null:
+			pc = PieceController.new()
+			add_child(pc)
+			pc.setup(new_logical, SQUARE_SIZE)
+			
+		_pieces[new_logical.position] = pc
+		old_pieces_list.erase(pc)
+		
+		if pc == attacker_pc:
+			continue # Handled by combat sequence
+			
+		var new_world = chess_to_world(new_logical.position)
+		var flat_old = Vector2(pc.position.x, pc.position.z)
+		var flat_new = Vector2(new_world.x, new_world.z)
+		
+		if flat_old.distance_to(flat_new) > 0.1:
 			_animations_pending += 1
+			pc.move_completed.connect(_on_piece_animation_done, CONNECT_ONE_SHOT)
+			pc.move_to(new_logical.position, SQUARE_SIZE)
+		else:
+			pc.update_visuals(SQUARE_SIZE)
 			
-			var is_white = pc.logical_piece.color == ChessTypes.PieceColor.WHITE
-			var graveyard = _graveyard_white if is_white else _graveyard_black
-			var count = graveyard.size()
-			graveyard.append(pc)
-			
-			# Captured White pieces on left (X=-4), Captured Black pieces on right (X=18)
-			var target_x = -4.0 if is_white else 18.0
-			var target_z = float(count) * 1.0 # Line up nicely from Z=0 to Z=14
-			var target_world = Vector3(target_x, 0, target_z)
-			
-			pc.capture_completed.connect(_on_piece_animation_done, CONNECT_ONE_SHOT)
-			pc.animate_capture(target_world)
+	for pc in old_pieces_list:
+		if pc == defender_pc:
+			continue # Handled by combat sequence
+		pc.queue_free()
+		
+	if attacker_pc and defender_pc:
+		_animations_pending += 1
+		attacker_pc.update_visuals(SQUARE_SIZE) # Update immediately for promotion visuals
+		
+		var is_white = defender_pc.logical_piece.color == ChessTypes.PieceColor.WHITE
+		var graveyard = _graveyard_white if is_white else _graveyard_black
+		var count = graveyard.size()
+		graveyard.append(defender_pc)
+		
+		var target_x = -4.0 if is_white else 18.0
+		var target_z = float(count) * 1.2
+		var target_world = Vector3(target_x, 0, target_z)
+		
+		_capture_manager.capture_presentation_finished.connect(_on_piece_animation_done, CONNECT_ONE_SHOT)
+		_capture_manager.play_capture_sequence(attacker_pc, defender_pc, move, SQUARE_SIZE, target_world)
 			
 	if _animations_pending == 0:
 		_on_piece_animation_done()

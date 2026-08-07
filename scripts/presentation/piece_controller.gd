@@ -38,6 +38,28 @@ func move_to(target_pos: Vector2i, square_size: float) -> Tween:
 	t.tween_callback(func(): move_completed.emit())
 	return t
 
+# -- Capture Presentation API --
+
+func get_mesh_instance() -> MeshInstance3D:
+	return _mesh_instance
+
+func get_base_rotation() -> Vector3:
+	var is_white = (logical_piece.color == ChessTypes.PieceColor.WHITE)
+	if logical_piece.type == ChessTypes.PieceType.KNIGHT:
+		return Vector3(0, PI/2.0 if is_white else -PI/2.0, 0)
+	return Vector3.ZERO
+
+func reset_visual_transform() -> void:
+	_mesh_instance.rotation = get_base_rotation()
+	_mesh_instance.scale = Vector3(_mesh_instance.scale.x, _mesh_instance.scale.y, _mesh_instance.scale.z) # Keep calibrated scale
+
+func trigger_impact_shake() -> Tween:
+	var t = get_tree().create_tween()
+	var original_scale = _mesh_instance.scale
+	t.tween_property(_mesh_instance, "scale", original_scale * 1.2, 0.05)
+	t.tween_property(_mesh_instance, "scale", original_scale, 0.1)
+	return t
+
 func animate_capture(target_pos: Vector3) -> Tween:
 	var t = get_tree().create_tween()
 	t.set_parallel(true)

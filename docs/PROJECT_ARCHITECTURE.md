@@ -99,3 +99,10 @@
 - **Capture Response:** Captured pieces undergo a rapid scaling Tween to zero via `Tween.TRANS_BACK` before being freed. A generic response designed solely for prototype clarity.
 - **Last Move Highlighting:** Added subtle yellow planes tracking the `from` and `to` positions of the previously executed `ChessMove` to aid logical readability.
 - **Synchronization Strategy:** Leveraged Godot's `Signal` pipeline dynamically binding to `move_completed` to await dynamic tween lengths without blocking `ChessGame`'s headless simulation capability.
+
+## 14. Milestone 8: Game-Ready Assets & Combat Visuals
+- **Asset Integration:** Successfully imported 3D static meshes for all pieces and board. Integrated them into `PieceController` with procedural scaling to match logical square size.
+- **Graveyard System:** Eliminated pieces are no longer freed instantly. They are procedurally animated (tumbled) into neat, organized rows on the left (captured White) and right (captured Black) sides of the board.
+- **Capture Presentation:** Added `CapturePresentationManager` as a dedicated orchestration class for captures. It takes control of the attacker and defender pieces and puppets them through a procedural combat sequence ("Hop and Smash") before returning control to the board. 
+- **Core Separation:** The manager remains completely isolated from the `ChessGame`. It only reads the visual `PieceController` instances and the `ChessMove`. Input is locked (`_is_animating` via `_animations_pending`) until the sequence finishes, ensuring perfect visual synchronization with the already-advanced logical state.
+- **Edge Cases:** Safely handles Promotion (attacker visually updates before combat) and En Passant (finds defender via `move.captured_piece.position` instead of destination square).
