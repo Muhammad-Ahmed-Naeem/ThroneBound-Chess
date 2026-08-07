@@ -63,13 +63,15 @@ func is_square_attacked(board: BoardState, pos: Vector2i, by_color: ChessTypes.P
 				return true
 				
 	# Check Diagonal Sliding attacks (Bishop, Queen)
-	var diags = [Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)]
-	if _check_sliders(board, pos, by_color, diags, [ChessTypes.PieceType.BISHOP, ChessTypes.PieceType.QUEEN]):
+	var diags: Array[Vector2i] = [Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)]
+	var valid_diags: Array[ChessTypes.PieceType] = [ChessTypes.PieceType.BISHOP, ChessTypes.PieceType.QUEEN]
+	if _check_sliders(board, pos, by_color, diags, valid_diags):
 		return true
 		
 	# Check Orthogonal Sliding attacks (Rook, Queen)
-	var orths = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
-	if _check_sliders(board, pos, by_color, orths, [ChessTypes.PieceType.ROOK, ChessTypes.PieceType.QUEEN]):
+	var orths: Array[Vector2i] = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
+	var valid_orths: Array[ChessTypes.PieceType] = [ChessTypes.PieceType.ROOK, ChessTypes.PieceType.QUEEN]
+	if _check_sliders(board, pos, by_color, orths, valid_orths):
 		return true
 		
 	return false

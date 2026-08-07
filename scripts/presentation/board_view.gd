@@ -23,6 +23,13 @@ func _ready() -> void:
 	
 	_generate_board()
 	_generate_pieces()
+	
+	# Dynamically position the camera to look from White's perspective
+	var camera = get_node_or_null("Camera3D")
+	if camera:
+		# Place camera behind White (Z=0) and look towards center (Z=7)
+		camera.position = Vector3(7.0, 10.0, -5.0)
+		camera.look_at(Vector3(7.0, 0.0, 7.0), Vector3.UP)
 
 func _generate_board() -> void:
 	for file in range(8):

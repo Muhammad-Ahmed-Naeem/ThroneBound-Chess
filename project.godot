@@ -15,4 +15,5 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Thronebound Chess"
+run/main_scene="uid://cb5yvqnhxw7s2"
 config/features=PackedStringArray("4.7", "Forward Plus")
