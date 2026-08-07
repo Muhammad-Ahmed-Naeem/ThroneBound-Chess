@@ -129,12 +129,12 @@ func _on_move_executed(move: ChessMove) -> void:
 		var flat_old = Vector2(pc.position.x, pc.position.z)
 		var flat_new = Vector2(new_world.x, new_world.z)
 		
+		pc.update_visuals(SQUARE_SIZE)
+		
 		if flat_old.distance_to(flat_new) > 0.1:
 			_animations_pending += 1
 			pc.move_completed.connect(_on_piece_animation_done, CONNECT_ONE_SHOT)
 			pc.move_to(new_logical.position, SQUARE_SIZE)
-		else:
-			pc.update_visuals(SQUARE_SIZE)
 			
 	for pc in old_pieces_list:
 		if pc == defender_pc:
