@@ -86,11 +86,12 @@ func _on_move_executed(move: ChessMove) -> void:
 	var defender_pc: PieceController = null
 	
 	if move.captured_piece != null:
-		# Find the exact nodes for attacker and defender
+		# Find the exact nodes for attacker and defender by reference, NOT by position
+		# (since MoveExecutor already changed moving_piece.position)
 		for pc in old_pieces_list:
-			if pc.logical_piece.position == move.from_position:
+			if pc.logical_piece == move.moving_piece:
 				attacker_pc = pc
-			if pc.logical_piece.position == move.captured_piece.position:
+			if pc.logical_piece == move.captured_piece:
 				defender_pc = pc
 				
 	# Reconcile new logical state with visual pieces
