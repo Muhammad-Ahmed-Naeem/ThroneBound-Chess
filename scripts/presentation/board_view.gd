@@ -24,31 +24,36 @@ func _ready() -> void:
 	_generate_board()
 	_generate_pieces()
 	
-	# Dynamically position the camera to look from White's perspective
+	# Position the camera for a better view
 	var camera = get_node_or_null("Camera3D")
 	if camera:
-		# Place camera behind White (Z=0) and look towards center (Z=7)
-		camera.position = Vector3(7.0, 10.0, -5.0)
+		camera.position = Vector3(7.0, 12.0, -2.0)
 		camera.look_at(Vector3(7.0, 0.0, 7.0), Vector3.UP)
 
 func _generate_board() -> void:
-	for file in range(8):
-		for rank in range(8):
-			var mesh = MeshInstance3D.new()
-			var box = BoxMesh.new()
-			box.size = Vector3(SQUARE_SIZE, 0.2, SQUARE_SIZE)
-			mesh.mesh = box
-			mesh.position = chess_to_world(Vector2i(file, rank))
-			mesh.position.y -= 0.1 # flush top to y=0
-			
-			var mat = StandardMaterial3D.new()
-			if (file + rank) % 2 != 0:
-				mat.albedo_color = Color(0.8, 0.8, 0.8) # Light
-			else:
-				mat.albedo_color = Color(0.3, 0.3, 0.3) # Dark
-				
-			mesh.material_override = mat
-			add_child(mesh)
+	var scene = preload("res://assets/models/pieces/scene.gltf").instantiate()
+	var board_node = PieceController._find_child_recursive(scene, "board")
+	
+	if board_node:
+		var mesh_instance = MeshInstance3D.new()
+		var mesh = PieceController._get_mesh(board_node)
+		mesh_instance.mesh = mesh
+		
+		# Apply calibrated scale
+		var aabb = mesh.get_aabb()
+		var scale_factor = 19.0 / max(aabb.size.x, aabb.size.z)
+		mesh_instance.scale = Vector3(scale_factor, scale_factor, scale_factor)
+		
+		# Center the board correctly at (7.0, 0, 7.0) with calibrated offset
+		var center_offset = aabb.position + (aabb.size / 2.0)
+		var target_pos = Vector3(7.0, 0.0, 7.2) # Includes Z offset of 0.2
+		mesh_instance.position = target_pos - (center_offset * scale_factor)
+		# Ensure the top of the board is slightly below Y=0
+		mesh_instance.position.y -= (aabb.position.y + aabb.size.y) * scale_factor + 0.1
+		
+		add_child(mesh_instance)
+	else:
+		print("Failed to find board mesh in gltf")
 
 func _generate_pieces() -> void:
 	var all = _game.get_board().get_all_pieces()
@@ -73,7 +78,6 @@ func _on_move_executed(move: ChessMove) -> void:
 	for pc in old_pieces:
 		if current_logical_pieces.has(pc.logical_piece):
 			var new_world = chess_to_world(pc.logical_piece.position)
-			# We check flat distance to avoid float precision issues with Y offsets
 			var flat_old = Vector2(pc.position.x, pc.position.z)
 			var flat_new = Vector2(new_world.x, new_world.z)
 			if flat_old.distance_to(flat_new) > 0.1:
@@ -131,15 +135,13 @@ func _handle_square_click(pos: Vector2i) -> void:
 				break
 				
 		if target_move != null:
-			# For prototype, default promotion to QUEEN
 			var prom = ChessTypes.PieceType.QUEEN if target_move.move_type == ChessMove.MoveType.PROMOTION else -1
 			var res = _game.try_move(_selected_pos, pos, prom)
 			if res == ChessTypes.MoveResult.SUCCESS:
-				return # _on_move_executed handles visual sync
+				return
 				
 		_clear_selection()
 	
-	# Select our own piece
 	var clicked_piece = _game.get_board().get_piece(pos)
 	if clicked_piece != null and clicked_piece.color == _game.get_current_turn():
 		_selected_pos = pos
@@ -156,7 +158,6 @@ func _clear_selection() -> void:
 	_legal_moves_cache.clear()
 	_visualizer.clear_visuals()
 
-# Coordinate Helpers
 func chess_to_world(pos: Vector2i) -> Vector3:
 	return Vector3(pos.x * SQUARE_SIZE, 0, pos.y * SQUARE_SIZE)
 

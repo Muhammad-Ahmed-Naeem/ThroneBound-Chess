@@ -18,7 +18,7 @@ func setup(p: ChessPiece, square_size: float) -> void:
 	_update_mesh()
 	position = Vector3(logical_piece.position.x * square_size, 0, logical_piece.position.y * square_size)
 
-func update_visuals(square_size: float) -> void:
+func update_visuals(_square_size: float) -> void:
 	if _last_known_type != logical_piece.type:
 		_update_mesh()
 
@@ -47,52 +47,81 @@ func animate_capture() -> Tween:
 	)
 	return t
 
+static var _mesh_cache_white: Dictionary = {}
+static var _mesh_cache_black: Dictionary = {}
+
+static func _load_meshes() -> void:
+	if not _mesh_cache_white.is_empty(): return
+	var scene = preload("res://assets/models/pieces/scene.gltf").instantiate()
+	var names = {
+		ChessTypes.PieceType.PAWN: "pawn",
+		ChessTypes.PieceType.ROOK: "rook",
+		ChessTypes.PieceType.KNIGHT: "knight",
+		ChessTypes.PieceType.BISHOP: "bishop",
+		ChessTypes.PieceType.QUEEN: "queen",
+		ChessTypes.PieceType.KING: "king"
+	}
+	for type in names:
+		var w_name = names[type] + "_white_low"
+		var b_name = names[type] + "_black"
+		
+		var w_node = _find_child_recursive(scene, w_name)
+		var b_node = _find_child_recursive(scene, b_name)
+		
+		if w_node: _mesh_cache_white[type] = _get_mesh(w_node)
+		if b_node: _mesh_cache_black[type] = _get_mesh(b_node)
+
+static func _find_child_recursive(node: Node, prefix: String) -> Node:
+	if node.name.to_lower().begins_with(prefix.to_lower()): return node
+	for c in node.get_children():
+		var res = _find_child_recursive(c, prefix)
+		if res: return res
+	return null
+
+static func _get_mesh(node: Node) -> Mesh:
+	if node is MeshInstance3D: return node.mesh
+	for c in node.get_children():
+		if c is MeshInstance3D: return c.mesh
+	return null
+
 func _update_mesh() -> void:
 	_last_known_type = logical_piece.type
-	var mat = StandardMaterial3D.new()
-	mat.albedo_color = Color(1.0, 1.0, 1.0) if logical_piece.color == ChessTypes.PieceColor.WHITE else Color(0.1, 0.1, 0.1)
+	PieceController._load_meshes()
 	
-	_mesh_instance.material_override = mat
+	var is_white = (logical_piece.color == ChessTypes.PieceColor.WHITE)
+	var cache = _mesh_cache_white if is_white else _mesh_cache_black
 	
-	match logical_piece.type:
-		ChessTypes.PieceType.PAWN:
-			var mesh = CylinderMesh.new()
-			mesh.top_radius = 0.3
-			mesh.bottom_radius = 0.4
-			mesh.height = 1.0
-			_mesh_instance.mesh = mesh
-			_base_y = 0.5
-		ChessTypes.PieceType.KNIGHT:
-			var mesh = BoxMesh.new()
-			mesh.size = Vector3(0.7, 1.2, 0.7)
-			_mesh_instance.mesh = mesh
-			_base_y = 0.6
-		ChessTypes.PieceType.BISHOP:
-			var mesh = CylinderMesh.new()
-			mesh.top_radius = 0.1
-			mesh.bottom_radius = 0.4
-			mesh.height = 1.5
-			_mesh_instance.mesh = mesh
-			_base_y = 0.75
-		ChessTypes.PieceType.ROOK:
-			var mesh = BoxMesh.new()
-			mesh.size = Vector3(0.8, 1.0, 0.8)
-			_mesh_instance.mesh = mesh
-			_base_y = 0.5
-		ChessTypes.PieceType.QUEEN:
-			var mesh = CylinderMesh.new()
-			mesh.top_radius = 0.4
-			mesh.bottom_radius = 0.5
-			mesh.height = 1.8
-			_mesh_instance.mesh = mesh
-			_base_y = 0.9
-		ChessTypes.PieceType.KING:
-			var mesh = CylinderMesh.new()
-			mesh.top_radius = 0.5
-			mesh.bottom_radius = 0.6
-			mesh.height = 2.0
-			_mesh_instance.mesh = mesh
-			_base_y = 1.0
+	if cache.has(logical_piece.type) and cache[logical_piece.type] != null:
+		var mesh = cache[logical_piece.type]
+		_mesh_instance.mesh = mesh
+		
+		var aabb = mesh.get_aabb()
+		var piece_width = max(aabb.size.x, aabb.size.z)
+		if piece_width > 0.001:
+			var scale_factor = 1.1 / piece_width # Calibrated scale
+			_mesh_instance.scale = Vector3(scale_factor, scale_factor, scale_factor)
 			
+			var center_x = aabb.position.x + aabb.size.x / 2.0
+			var center_z = aabb.position.z + aabb.size.z / 2.0
+			_mesh_instance.position.x = -center_x * scale_factor
+			_mesh_instance.position.z = -center_z * scale_factor
+			_base_y = -aabb.position.y * scale_factor
+			
+			# Orient Knights to face forward
+			if logical_piece.type == ChessTypes.PieceType.KNIGHT:
+				# Mesh might be facing X or -X originally. Rotate by 90 degrees to face Z.
+				# We'll try 90 degrees for white and -90 for black.
+				_mesh_instance.rotation.y = PI/2.0 if is_white else -PI/2.0
+			else:
+				_mesh_instance.rotation.y = 0.0
+		else:
+			_mesh_instance.scale = Vector3(1, 1, 1)
+			_base_y = 0.0
+			
+		_mesh_instance.material_override = null
+	else:
+		print("Failed to find mesh for type: ", logical_piece.type)
+		_base_y = 0.0
+		
 	if not _is_selected:
 		_mesh_instance.position.y = _base_y

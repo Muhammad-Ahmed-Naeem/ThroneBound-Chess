@@ -1,0 +1,8 @@
+Model Information:
+* title:	Chess Set
+* source:	https://sketchfab.com/3d-models/chess-set-df8d1bd2836a42718c2212fbe93702fb
+* author:	Tomas Dvorak (https://sketchfab.com/Tomas_Dvorak)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works
