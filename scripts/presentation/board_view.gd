@@ -12,6 +12,8 @@ var _pieces: Dictionary = {} # Maps Vector2i -> PieceController
 
 var _is_animating: bool = false
 var _animations_pending: int = 0
+var _graveyard_white: Array[PieceController] = []
+var _graveyard_black: Array[PieceController] = []
 
 func _ready() -> void:
 	_game = ChessGame.new()
@@ -90,8 +92,19 @@ func _on_move_executed(move: ChessMove) -> void:
 			_pieces[pc.logical_piece.position] = pc
 		else:
 			_animations_pending += 1
+			
+			var is_white = pc.logical_piece.color == ChessTypes.PieceColor.WHITE
+			var graveyard = _graveyard_white if is_white else _graveyard_black
+			var count = graveyard.size()
+			graveyard.append(pc)
+			
+			# Captured White pieces on left (X=-4), Captured Black pieces on right (X=18)
+			var target_x = -4.0 if is_white else 18.0
+			var target_z = float(count) * 1.0 # Line up nicely from Z=0 to Z=14
+			var target_world = Vector3(target_x, 0, target_z)
+			
 			pc.capture_completed.connect(_on_piece_animation_done, CONNECT_ONE_SHOT)
-			pc.animate_capture()
+			pc.animate_capture(target_world)
 			
 	if _animations_pending == 0:
 		_on_piece_animation_done()

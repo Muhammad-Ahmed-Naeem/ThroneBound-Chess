@@ -38,13 +38,31 @@ func move_to(target_pos: Vector2i, square_size: float) -> Tween:
 	t.tween_callback(func(): move_completed.emit())
 	return t
 
-func animate_capture() -> Tween:
+func animate_capture(target_pos: Vector3) -> Tween:
 	var t = get_tree().create_tween()
-	t.tween_property(_mesh_instance, "scale", Vector3.ZERO, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
-	t.tween_callback(func():
+	t.set_parallel(true)
+	
+	# Slide to the graveyard X/Z
+	t.tween_property(self, "position:x", target_pos.x, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	t.tween_property(self, "position:z", target_pos.z, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	
+	# Hop up in an arc (Y axis)
+	t.tween_property(self, "position:y", 3.0, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	t.tween_property(self, "position:y", 0.0, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN).set_delay(0.25)
+	
+	# Tumble wildly
+	t.tween_property(_mesh_instance, "rotation", Vector3(PI*2, PI*2, 0), 0.5)
+	
+	# Finish and reset rotation
+	t.chain().tween_callback(func():
+		var is_white = (logical_piece.color == ChessTypes.PieceColor.WHITE)
+		if logical_piece.type == ChessTypes.PieceType.KNIGHT:
+			_mesh_instance.rotation = Vector3(0, PI/2.0 if is_white else -PI/2.0, 0)
+		else:
+			_mesh_instance.rotation = Vector3.ZERO
 		capture_completed.emit()
-		queue_free()
 	)
+	
 	return t
 
 static var _mesh_cache_white: Dictionary = {}
