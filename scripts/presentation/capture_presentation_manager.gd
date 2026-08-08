@@ -28,9 +28,7 @@ func play_capture_sequence(attacker: PieceController, defender: PieceController,
 	t.tween_property(attacker, "position", approach_pos, 0.25).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	
 	# Phase B: Anticipation (0.15s)
-	# Tilt backward slightly
-	var tilt_axis = Vector3.UP.cross(attack_dir).normalized()
-	var base_rot = attacker.get_base_rotation()
+	# Tilt backward slightly (Deferred for now, we just tween position up slightly for wind-up)
 	
 	# We can tween the mesh's basis/rotation, but for simplicity we'll just tween position up slightly for wind-up
 	t.tween_property(attacker, "position:y", 0.5, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
