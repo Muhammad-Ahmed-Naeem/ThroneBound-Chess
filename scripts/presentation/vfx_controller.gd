@@ -12,8 +12,11 @@ func play_impact_vfx(pos: Vector3) -> void:
 	mat.emission_energy_multiplier = 2.0
 	mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
 	
-	var mesh = QuadMesh.new()
-	mesh.size = Vector2(0.2, 0.2)
+	var mesh = SphereMesh.new()
+	mesh.radius = 0.1
+	mesh.height = 0.2
+	mesh.radial_segments = 8
+	mesh.rings = 4
 	mesh.material = mat
 	particles.draw_pass_1 = mesh
 	
