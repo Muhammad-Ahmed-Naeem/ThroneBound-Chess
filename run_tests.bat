@@ -1,0 +1,12 @@
+@echo off
+set GODOT="c:\Program Files\Godot\Godot_v4.2.1-stable_win64.exe"
+echo Running tests...
+%GODOT% --headless -s tests\test_board_state.gd
+%GODOT% --headless -s tests\test_move_generator.gd
+%GODOT% --headless -s tests\test_move_execution.gd
+%GODOT% --headless -s tests\test_chess_rules.gd
+%GODOT% --headless -s tests\test_special_moves.gd
+%GODOT% --headless -s tests\test_game_endings.gd
+%GODOT% --headless -s tests\test_draw_rules.gd
+%GODOT% --headless -s tests\test_chess_game.gd
+echo Done.

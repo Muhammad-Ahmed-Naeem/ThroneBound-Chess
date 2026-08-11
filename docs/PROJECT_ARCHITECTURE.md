@@ -106,3 +106,10 @@
 - **Capture Presentation:** Added `CapturePresentationManager` as a dedicated orchestration class for captures. It takes control of the attacker and defender pieces and puppets them through a procedural combat sequence ("Hop and Smash") before returning control to the board. 
 - **Core Separation:** The manager remains completely isolated from the `ChessGame`. It only reads the visual `PieceController` instances and the `ChessMove`. Input is locked (`_is_animating` via `_animations_pending`) until the sequence finishes, ensuring perfect visual synchronization with the already-advanced logical state.
 - **Edge Cases:** Safely handles Promotion (attacker visually updates before combat) and En Passant (finds defender via `move.captured_piece.position` instead of destination square).
+
+## 15. Milestone 9: Environment, VFX & Audio Foundation
+- **Procedural Environment:** Introduced `EnvironmentManager` to construct a stylized dark fantasy Throne Room entirely procedurally (using CSG primitives). This avoids heavy textures and external asset dependencies while providing scale and depth.
+- **Lighting Strategy:** Employs a `DirectionalLight3D` key light (moonlight) and warm `OmniLight3D` nodes (torchlight) with subtle fog/glow to create atmosphere without compromising the readability of the chess pieces.
+- **VFX Integration:** Created `VFXController` to manage procedural generic particle effects (e.g., impact dust/sparks using `GPUParticles3D`). This is directly triggered during the "strike" phase of `CapturePresentationManager`.
+- **Audio Architecture:** Built a clean event-driven `AudioController` to manage spatialized sound (`AudioStreamPlayer3D`). It allows transparent injection of `.wav`/`.ogg` files later without altering the presentation calling logic.
+- **Strict Separation:** The environment, VFX, and audio presentation systems are completely decoupled from `ChessGame`, `BoardState`, and rules engines, continuing the established project philosophy.

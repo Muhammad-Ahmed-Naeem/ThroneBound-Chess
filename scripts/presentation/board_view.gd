@@ -17,6 +17,10 @@ var _graveyard_black: Array[PieceController] = []
 const CaptureManager = preload("res://scripts/presentation/capture_presentation_manager.gd")
 var _capture_manager: CaptureManager
 
+var _env_manager: EnvironmentManager
+var _vfx_controller: VFXController
+var _audio_controller: AudioController
+
 func _ready() -> void:
 	_game = ChessGame.new()
 	_game.move_executed.connect(_on_move_executed)
@@ -27,6 +31,15 @@ func _ready() -> void:
 	
 	_capture_manager = CaptureManager.new()
 	add_child(_capture_manager)
+	
+	_env_manager = EnvironmentManager.new()
+	add_child(_env_manager)
+	
+	_vfx_controller = VFXController.new()
+	add_child(_vfx_controller)
+	
+	_audio_controller = AudioController.new()
+	add_child(_audio_controller)
 	
 	_generate_board()
 	_generate_pieces()
@@ -135,6 +148,7 @@ func _on_move_executed(move: ChessMove) -> void:
 			_animations_pending += 1
 			pc.move_completed.connect(_on_piece_animation_done, CONNECT_ONE_SHOT)
 			pc.move_to(new_logical.position, SQUARE_SIZE)
+			_audio_controller.play_movement(new_world)
 			
 	for pc in old_pieces_list:
 		if pc == defender_pc:
@@ -155,7 +169,7 @@ func _on_move_executed(move: ChessMove) -> void:
 		var target_world = Vector3(target_x, 0, target_z)
 		
 		_capture_manager.capture_presentation_finished.connect(_on_piece_animation_done, CONNECT_ONE_SHOT)
-		_capture_manager.play_capture_sequence(attacker_pc, defender_pc, move, SQUARE_SIZE, target_world)
+		_capture_manager.play_capture_sequence(attacker_pc, defender_pc, move, SQUARE_SIZE, target_world, _vfx_controller, _audio_controller)
 			
 	if _animations_pending == 0:
 		_on_piece_animation_done()

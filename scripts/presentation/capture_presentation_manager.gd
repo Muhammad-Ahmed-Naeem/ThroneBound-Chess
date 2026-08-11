@@ -7,7 +7,7 @@ var _is_busy: bool = false
 
 # Starts the choreography for a capture.
 # When finished, emits capture_presentation_finished.
-func play_capture_sequence(attacker: PieceController, defender: PieceController, move: ChessMove, square_size: float, graveyard_target: Vector3) -> void:
+func play_capture_sequence(attacker: PieceController, defender: PieceController, move: ChessMove, square_size: float, graveyard_target: Vector3, vfx: VFXController = null, audio: AudioController = null) -> void:
 	if _is_busy:
 		push_warning("CapturePresentationManager is already busy.")
 		return
@@ -40,6 +40,12 @@ func play_capture_sequence(attacker: PieceController, defender: PieceController,
 	t.tween_callback(func():
 		attacker.trigger_impact_shake()
 		defender.animate_capture(graveyard_target)
+		
+		if vfx:
+			vfx.play_impact_vfx(target_world + Vector3(0, 1.0, 0)) # Slight elevation for impact burst
+		if audio:
+			audio.play_capture_impact(target_world)
+			audio.play_graveyard_tumble(graveyard_target)
 	)
 	
 	# Phase F: Settle (0.2s delay for visual breathing room)
