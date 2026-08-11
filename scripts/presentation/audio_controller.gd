@@ -35,6 +35,9 @@ func _play_3d(stream: AudioStream, pos: Vector3, event_name: String) -> void:
 	player.position = pos
 	player.autoplay = true
 	
+	# AAA audio design: slight pitch randomization prevents ear fatigue
+	player.pitch_scale = randf_range(0.85, 1.1)
+	
 	# Add some spatial tuning so it sounds good
 	player.max_distance = 50.0
 	player.unit_size = 5.0
