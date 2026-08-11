@@ -49,7 +49,7 @@ func _build_table() -> void:
 	var table = CSGBox3D.new()
 	# Board is 16x16 units (8 squares * 2.0). 
 	table.size = Vector3(18.0, 2.0, 18.0) 
-	table.position = Vector3(7.0, -1.1, 7.0) # Slightly below Y=0
+	table.position = Vector3(7.0, -1.5, 7.0) # Top is at -0.5, safely below the board
 	
 	var table_mat = StandardMaterial3D.new()
 	table_mat.albedo_color = Color(0.1, 0.05, 0.03) # Dark warm wood/stone
@@ -57,17 +57,6 @@ func _build_table() -> void:
 	table_mat.metallic = 0.2
 	table.material = table_mat
 	
-	# Table Border/Trim
-	var trim = CSGBox3D.new()
-	trim.size = Vector3(18.5, 0.5, 18.5)
-	trim.position = Vector3(0.0, 1.0, 0.0) # Relative to table
-	var trim_mat = StandardMaterial3D.new()
-	trim_mat.albedo_color = Color(0.2, 0.15, 0.05) # Gold/brass trim
-	trim_mat.metallic = 0.8
-	trim_mat.roughness = 0.4
-	trim.material = trim_mat
-	
-	table.add_child(trim)
 	add_child(table)
 
 func _setup_lighting() -> void:
