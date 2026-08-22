@@ -11,6 +11,7 @@ var _legal_moves_cache: Array[ChessMove] = []
 var _pieces: Dictionary = {} # Maps Vector2i -> PieceController
 
 var _is_animating: bool = false
+var _is_waiting_for_promotion: bool = false
 var _animations_pending: int = 0
 var _graveyard_white: Array[PieceController] = []
 var _graveyard_black: Array[PieceController] = []
@@ -183,7 +184,7 @@ func _on_piece_animation_done() -> void:
 			print("Game Over! Result: ", _game.get_game_result())
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _is_animating: return
+	if _is_animating or _is_waiting_for_promotion: return
 	
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var camera = get_viewport().get_camera_3d()
@@ -213,8 +214,11 @@ func _handle_square_click(pos: Vector2i) -> void:
 				break
 				
 		if target_move != null:
-			var prom = ChessTypes.PieceType.QUEEN if target_move.move_type == ChessMove.MoveType.PROMOTION else -1
-			var res = _game.try_move(_selected_pos, pos, prom)
+			if target_move.move_type == ChessMove.MoveType.PROMOTION:
+				_show_promotion_menu(_selected_pos, pos)
+				return
+				
+			var res = _game.try_move(_selected_pos, pos, -1)
 			if res == ChessTypes.MoveResult.SUCCESS:
 				return
 				
@@ -229,12 +233,27 @@ func _handle_square_click(pos: Vector2i) -> void:
 		_visualizer.show_legal_moves(_legal_moves_cache, SQUARE_SIZE)
 
 func _clear_selection() -> void:
-	if _selected_pos != Vector2i(-1, -1) and _pieces.has(_selected_pos):
-		_pieces[_selected_pos].set_selected(false)
-		
-	_selected_pos = Vector2i(-1, -1)
+	if _selected_pos != Vector2i(-1, -1):
+		if _pieces.has(_selected_pos):
+			_pieces[_selected_pos].set_selected(false)
+		_selected_pos = Vector2i(-1, -1)
 	_legal_moves_cache.clear()
 	_visualizer.clear_visuals()
+
+func _show_promotion_menu(from_pos: Vector2i, to_pos: Vector2i) -> void:
+	_is_waiting_for_promotion = true
+	var menu = PromotionMenu.new()
+	menu.piece_selected.connect(func(piece_type: int):
+		_on_promotion_selected(from_pos, to_pos, piece_type)
+	)
+	add_child(menu)
+
+func _on_promotion_selected(from_pos: Vector2i, to_pos: Vector2i, piece_type: int) -> void:
+	_is_waiting_for_promotion = false
+	var res = _game.try_move(from_pos, to_pos, piece_type)
+	if res == ChessTypes.MoveResult.SUCCESS:
+		pass # Move handled by signal
+	_clear_selection()
 
 func chess_to_world(pos: Vector2i) -> Vector3:
 	return Vector3(pos.x * SQUARE_SIZE, 0, pos.y * SQUARE_SIZE)
