@@ -9,4 +9,6 @@ echo Running tests...
 %GODOT% --headless -s tests\test_game_endings.gd
 %GODOT% --headless -s tests\test_draw_rules.gd
 %GODOT% --headless -s tests\test_chess_game.gd
+%GODOT% --headless -s tests\test_fen_generator.gd
+%GODOT% --headless -s tests\test_stockfish_adapter.gd
 echo Done.

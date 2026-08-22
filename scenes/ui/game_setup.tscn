@@ -51,8 +51,28 @@ text = "LOCAL 2 PLAYER"
 [node name="AiButton" type="Button" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "VS AI (COMING SOON)"
-disabled = true
+text = "VS AI"
+
+[node name="AiOptions" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ColorLabel" type="Label" parent="CenterContainer/VBoxContainer/AiOptions"]
+layout_mode = 2
+text = "Player Color:"
+horizontal_alignment = 1
+
+[node name="ColorOptions" type="OptionButton" parent="CenterContainer/VBoxContainer/AiOptions"]
+layout_mode = 2
+
+[node name="DiffLabel" type="Label" parent="CenterContainer/VBoxContainer/AiOptions"]
+layout_mode = 2
+text = "Difficulty:"
+horizontal_alignment = 1
+
+[node name="DiffOptions" type="OptionButton" parent="CenterContainer/VBoxContainer/AiOptions"]
+layout_mode = 2
 
 [node name="MarginContainer2" type="MarginContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2

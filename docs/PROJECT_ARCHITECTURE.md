@@ -126,3 +126,13 @@
   - `GameResultScreen`: Appears upon terminal game states (Checkmate/Draw). Evaluates winner purely from `ChessGame` data.
   - `SettingsMenu`: Manages volume (Master, Music, SFX via Godot's audio buses) and window modes. Saves persistently using `ConfigFile` to `user://settings.cfg`.
 - **Intentionally Deferred:** Stockfish/AI gameplay, piece-specific signature combat, and online networking remain excluded.
+
+## 17. Milestone 11: Stockfish AI Integration
+- **Strict Orchestration Architecture:** AI is cleanly bridged as an external recommender. `ChessGame` remains the absolute sovereign authority over rules, movement validation, check, and board states.
+- **AI Subsystem:** 
+  - `FenGenerator`: Translates `ChessGame`, `TurnManager`, and `GameHistory` into strict FEN format strings. Handles En Passant targets, Castling validation, and Move clocks natively from history.
+  - `StockfishEngine`: Raw process wrapper invoking `assets/bin/stockfish/stockfish.exe` over a background Thread using `OS.execute_with_pipe()`. Deals only with raw UCI string processing, isolating the game loop from blocking input.
+  - `StockfishAdapter`: Bridging facade tying `StockfishEngine` to `ChessGame`. Automatically parses `bestmove` strings (like `e7e8q`) back to `Vector2i` endpoints and `PieceType` enums, injecting them into `ChessGame.try_move()`.
+- **Presentation Seamlessness:** By routing AI decisions back through `ChessGame.try_move()`, AI moves automatically trigger `move_executed`, meaning AI captures and movements utilize the exact same animation, audio, and VFX systems built for humans without any duplicate code.
+- **Graceful Lifecycle Management:** Checks `_is_ai_turn()` and automatically requests moves without human input. Handles headless pauses securely (`stop` search on pause, `go` on resume) and cleans up processes safely when exiting back to the Main Menu. Missing binaries result in a logged error rather than an application crash.
+- **Licensing Constraint:** Because Stockfish is GPL-licensed, it communicates strictly over independent external process pipelines. Usage and distribution rules are correctly documented in `licenses/STOCKFISH_LICENSE.md`.

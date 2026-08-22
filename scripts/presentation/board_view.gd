@@ -23,6 +23,9 @@ var _vfx_controller: VFXController
 var _audio_controller: AudioController
 var _camera_pivot: Node3D
 
+const StockfishAdapterClass = preload("res://scripts/ai/stockfish_adapter.gd")
+var _stockfish: StockfishAdapterClass
+
 @onready var game_hud = get_node_or_null("CanvasLayer/GameHUD")
 @onready var pause_menu = get_node_or_null("CanvasLayer/PauseMenu")
 @onready var result_screen = get_node_or_null("CanvasLayer/GameResultScreen")
@@ -47,6 +50,9 @@ func _ready() -> void:
 	_audio_controller = AudioController.new()
 	add_child(_audio_controller)
 	
+	_stockfish = StockfishAdapterClass.new()
+	add_child(_stockfish)
+	
 	_generate_board()
 	
 	# Position the camera for a better view using a pivot
@@ -65,6 +71,7 @@ func _ready() -> void:
 	if pause_menu:
 		pause_menu.restart_requested.connect(start_match)
 		pause_menu.main_menu_requested.connect(func(): SceneTransition.change_scene("res://scenes/ui/main_menu.tscn"))
+		pause_menu.visibility_changed.connect(_on_pause_menu_visibility_changed)
 		
 	if result_screen:
 		result_screen.rematch_requested.connect(start_match)
@@ -99,6 +106,25 @@ func start_match() -> void:
 		result_screen.hide_result()
 		
 	_update_camera_for_turn(_game.get_current_turn(), true)
+	_check_ai_turn()
+
+func _on_pause_menu_visibility_changed() -> void:
+	if pause_menu.visible:
+		_stockfish.stop_search()
+	else:
+		_check_ai_turn()
+
+func _is_ai_turn() -> bool:
+	if SceneTransition.current_config.game_mode != GameConfigClass.GameMode.VS_AI: return false
+	var ai_color = ChessTypes.PieceColor.BLACK if SceneTransition.current_config.player_color == GameConfigClass.PlayerColor.WHITE else ChessTypes.PieceColor.WHITE
+	return _game.get_current_turn() == ai_color
+
+func _check_ai_turn() -> void:
+	if _is_ai_turn() and not _game.is_game_over() and not get_tree().paused:
+		# Update UI slightly to show AI is thinking
+		if game_hud and game_hud.has_method("set_title"):
+			pass # In future we can set 'AI THINKING...'
+		_stockfish.request_move(_game, SceneTransition.current_config.ai_difficulty)
 
 func _generate_board() -> void:
 	var scene = preload("res://assets/models/pieces/scene.gltf").instantiate()
@@ -240,6 +266,8 @@ func _on_piece_animation_done() -> void:
 				winner = ChessTypes.PieceColor.WHITE if _game.get_current_turn() == ChessTypes.PieceColor.BLACK else ChessTypes.PieceColor.BLACK
 			if result_screen:
 				result_screen.display_result(_game.get_game_result(), winner)
+		else:
+			_check_ai_turn()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and pause_menu:
@@ -249,6 +277,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 		
 	if _is_animating or _is_waiting_for_promotion or get_tree().paused or _game.is_game_over(): return
+	if _is_ai_turn(): return
 	
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var camera = get_viewport().get_camera_3d()
