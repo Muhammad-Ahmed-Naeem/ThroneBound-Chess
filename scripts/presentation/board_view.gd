@@ -124,6 +124,14 @@ func _check_ai_turn() -> void:
 		# Update UI slightly to show AI is thinking
 		if game_hud and game_hud.has_method("set_title"):
 			pass # In future we can set 'AI THINKING...'
+			
+		# Add a short, human-like reaction delay before requesting the move
+		await get_tree().create_timer(randf_range(0.5, 1.2)).timeout
+		
+		# Double check we are still valid after await
+		if _game.is_game_over() or get_tree().paused or not _is_ai_turn():
+			return
+			
 		_stockfish.request_move(_game, SceneTransition.current_config.ai_difficulty)
 
 func _generate_board() -> void:

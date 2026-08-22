@@ -3,3 +3,6 @@
 
 # Log files
 *.log
+
+# Third-party binaries
+assets/bin/stockfish/stockfish*
