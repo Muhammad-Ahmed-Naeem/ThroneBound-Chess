@@ -21,6 +21,7 @@ var _capture_manager: CaptureManager
 var _env_manager: EnvironmentManager
 var _vfx_controller: VFXController
 var _audio_controller: AudioController
+var _camera_pivot: Node3D
 
 @onready var game_hud = get_node_or_null("CanvasLayer/GameHUD")
 @onready var pause_menu = get_node_or_null("CanvasLayer/PauseMenu")
@@ -48,11 +49,18 @@ func _ready() -> void:
 	
 	_generate_board()
 	
-	# Position the camera for a better view
+	# Position the camera for a better view using a pivot
 	var camera = get_node_or_null("Camera3D")
 	if camera:
-		camera.position = Vector3(7.0, 12.0, -2.0)
-		camera.look_at(Vector3(7.0, 0.0, 7.0), Vector3.UP)
+		_camera_pivot = Node3D.new()
+		_camera_pivot.position = Vector3(7.0, 0.0, 7.0)
+		add_child(_camera_pivot)
+		
+		remove_child(camera)
+		_camera_pivot.add_child(camera)
+		
+		camera.position = Vector3(0.0, 12.0, -9.0)
+		camera.look_at(_camera_pivot.global_position, Vector3.UP)
 		
 	if pause_menu:
 		pause_menu.restart_requested.connect(start_match)
@@ -89,6 +97,8 @@ func start_match() -> void:
 		
 	if result_screen:
 		result_screen.hide_result()
+		
+	_update_camera_for_turn(_game.get_current_turn(), true)
 
 func _generate_board() -> void:
 	var scene = preload("res://assets/models/pieces/scene.gltf").instantiate()
@@ -221,6 +231,9 @@ func _on_piece_animation_done() -> void:
 		_is_animating = false
 		if game_hud:
 			game_hud.update_hud(_game.get_current_turn(), _game.is_current_player_in_check())
+			
+		_update_camera_for_turn(_game.get_current_turn(), false)
+		
 		if _game.is_game_over():
 			var winner = -1
 			if _game.get_game_result() == ChessTypes.GameResult.CHECKMATE:
@@ -313,3 +326,17 @@ func world_to_chess(pos: Vector3) -> Vector2i:
 	var x = round(pos.x / SQUARE_SIZE)
 	var z = round(pos.z / SQUARE_SIZE)
 	return Vector2i(x, z)
+
+const GameConfigClass = preload("res://scripts/ui/game_configuration.gd")
+
+func _update_camera_for_turn(turn: int, instant: bool = false) -> void:
+	if not _camera_pivot: return
+	
+	if SceneTransition.current_config.game_mode == GameConfigClass.GameMode.LOCAL_2_PLAYER:
+		var target_rotation_y = 0.0 if turn == ChessTypes.PieceColor.WHITE else PI
+		
+		if instant:
+			_camera_pivot.rotation.y = target_rotation_y
+		else:
+			var tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+			tween.tween_property(_camera_pivot, "rotation:y", target_rotation_y, 0.8)
