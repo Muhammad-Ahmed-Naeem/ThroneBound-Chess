@@ -1,6 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://cb5yvqnhxw7s2"]
 
 [ext_resource type="Script" path="res://scripts/presentation/board_view.gd" id="1_bdview"]
+[ext_resource type="PackedScene" uid="uid://gamehud123" path="res://scenes/ui/game_hud.tscn" id="2_hud"]
+[ext_resource type="PackedScene" uid="uid://pausemenu123" path="res://scenes/ui/pause_menu.tscn" id="3_pause"]
+[ext_resource type="PackedScene" uid="uid://gameresult123" path="res://scenes/ui/game_result_screen.tscn" id="4_result"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_abc12"]
 sky_top_color = Color(0.384314, 0.454902, 0.54902, 1)
@@ -30,3 +33,11 @@ current = true
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 7, 10, 7)
 shadow_enabled = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GameHUD" parent="CanvasLayer" instance=ExtResource("2_hud")]
+
+[node name="PauseMenu" parent="CanvasLayer" instance=ExtResource("3_pause")]
+
+[node name="GameResultScreen" parent="CanvasLayer" instance=ExtResource("4_result")]

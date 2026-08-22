@@ -22,6 +22,10 @@ var _env_manager: EnvironmentManager
 var _vfx_controller: VFXController
 var _audio_controller: AudioController
 
+@onready var game_hud = get_node_or_null("CanvasLayer/GameHUD")
+@onready var pause_menu = get_node_or_null("CanvasLayer/PauseMenu")
+@onready var result_screen = get_node_or_null("CanvasLayer/GameResultScreen")
+
 func _ready() -> void:
 	_game = ChessGame.new()
 	_game.move_executed.connect(_on_move_executed)
@@ -43,13 +47,48 @@ func _ready() -> void:
 	add_child(_audio_controller)
 	
 	_generate_board()
-	_generate_pieces()
 	
 	# Position the camera for a better view
 	var camera = get_node_or_null("Camera3D")
 	if camera:
 		camera.position = Vector3(7.0, 12.0, -2.0)
 		camera.look_at(Vector3(7.0, 0.0, 7.0), Vector3.UP)
+		
+	if pause_menu:
+		pause_menu.restart_requested.connect(start_match)
+		pause_menu.main_menu_requested.connect(func(): SceneTransition.change_scene("res://scenes/ui/main_menu.tscn"))
+		
+	if result_screen:
+		result_screen.rematch_requested.connect(start_match)
+		result_screen.main_menu_requested.connect(func(): SceneTransition.change_scene("res://scenes/ui/main_menu.tscn"))
+		
+	start_match()
+
+func start_match() -> void:
+	get_tree().paused = false
+	
+	_game.start_new_game()
+	_clear_selection()
+	
+	for pc in _pieces.values():
+		pc.queue_free()
+	_pieces.clear()
+	
+	for pc in _graveyard_white:
+		pc.queue_free()
+	_graveyard_white.clear()
+	
+	for pc in _graveyard_black:
+		pc.queue_free()
+	_graveyard_black.clear()
+	
+	_generate_pieces()
+	
+	if game_hud:
+		game_hud.update_hud(_game.get_current_turn(), _game.is_current_player_in_check())
+		
+	if result_screen:
+		result_screen.hide_result()
 
 func _generate_board() -> void:
 	var scene = preload("res://assets/models/pieces/scene.gltf").instantiate()
@@ -180,11 +219,23 @@ func _on_piece_animation_done() -> void:
 		_animations_pending -= 1
 	if _animations_pending == 0:
 		_is_animating = false
+		if game_hud:
+			game_hud.update_hud(_game.get_current_turn(), _game.is_current_player_in_check())
 		if _game.is_game_over():
-			print("Game Over! Result: ", _game.get_game_result())
+			var winner = -1
+			if _game.get_game_result() == ChessTypes.GameResult.CHECKMATE:
+				winner = ChessTypes.PieceColor.WHITE if _game.get_current_turn() == ChessTypes.PieceColor.BLACK else ChessTypes.PieceColor.BLACK
+			if result_screen:
+				result_screen.display_result(_game.get_game_result(), winner)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _is_animating or _is_waiting_for_promotion: return
+	if event.is_action_pressed("ui_cancel") and pause_menu:
+		if _game.is_game_over(): return
+		if not get_tree().paused:
+			pause_menu.open()
+		return
+		
+	if _is_animating or _is_waiting_for_promotion or get_tree().paused or _game.is_game_over(): return
 	
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var camera = get_viewport().get_camera_3d()

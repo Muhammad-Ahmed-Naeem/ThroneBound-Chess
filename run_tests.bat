@@ -1,5 +1,5 @@
 @echo off
-set GODOT="c:\Program Files\Godot\Godot_v4.2.1-stable_win64.exe"
+set GODOT="C:\Users\great\OneDrive\Desktop\Godot_v4.7.1-stable_win64_console.exe"
 echo Running tests...
 %GODOT% --headless -s tests\test_board_state.gd
 %GODOT% --headless -s tests\test_move_generator.gd

@@ -113,3 +113,16 @@
 - **VFX Integration:** Created `VFXController` to manage procedural generic particle effects (e.g., impact dust/sparks using `GPUParticles3D`). This is directly triggered during the "strike" phase of `CapturePresentationManager`.
 - **Audio Architecture:** Built a clean event-driven `AudioController` to manage spatialized sound (`AudioStreamPlayer3D`). It allows transparent injection of `.wav`/`.ogg` files later without altering the presentation calling logic.
 - **Strict Separation:** The environment, VFX, and audio presentation systems are completely decoupled from `ChessGame`, `BoardState`, and rules engines, continuing the established project philosophy.
+
+## 16. Milestone 10: Game Shell & UI Flow
+- **Architecture Philosophy:** The UI is an outer shell. It observes the Chess Core via `ChessGame` but never calculates chess rules, checkmate conditions, or move legality itself.
+- **Scene Flow:** `MainMenu` -> `GameSetup` -> `ChessBoard`. 
+- **SceneTransition Autoload:** A minimal autoload (`SceneTransition`) is used exclusively to hold the active `GameConfiguration` and trigger scene swaps. It is intentionally restricted from becoming a global GameManager.
+- **UI Components:**
+  - `MainMenu`: Application entry point. Handles Play, Settings, Quit.
+  - `GameSetup`: Configures the match (e.g. Local 2 Player vs AI). "VS AI" is deliberately visually disabled to prepare for future Stockfish integration without rewriting the UI.
+  - `GameHUD`: Minimalist overlay indicating current turn and check state. Displayed within the `ChessBoard` scene.
+  - `PauseMenu`: Overlays the match on `ESC`. Safely pauses the `SceneTree` while remaining interactive, preventing rogue input to the `BoardView`.
+  - `GameResultScreen`: Appears upon terminal game states (Checkmate/Draw). Evaluates winner purely from `ChessGame` data.
+  - `SettingsMenu`: Manages volume (Master, Music, SFX via Godot's audio buses) and window modes. Saves persistently using `ConfigFile` to `user://settings.cfg`.
+- **Intentionally Deferred:** Stockfish/AI gameplay, piece-specific signature combat, and online networking remain excluded.
