@@ -3,38 +3,24 @@ extends Control
 @onready var panel = $PanelContainer
 @onready var master_slider = %MasterSlider
 @onready var music_slider = %MusicSlider
-@onready var master_percent = %MasterPercent
-@onready var music_percent = %MusicPercent
 @onready var back_button = %BackBtn
 
 @onready var audio_hover = $AudioHover
 @onready var audio_click = $AudioClick
 
 func _ready() -> void:
-	var lion_tex = load("res://assets/textures/ui/lion_grabber.png")
-	master_slider.add_theme_icon_override("grabber", lion_tex)
-	master_slider.add_theme_icon_override("grabber_highlight", lion_tex)
-	music_slider.add_theme_icon_override("grabber", lion_tex)
-	music_slider.add_theme_icon_override("grabber_highlight", lion_tex)
-	
-	master_slider.value_changed.connect(_on_master_changed)
-	music_slider.value_changed.connect(_on_music_changed)
-	
-	_on_master_changed(master_slider.value)
-	_on_music_changed(music_slider.value)
+	var diamond_tex = load("res://assets/textures/ui/diamond_grabber.png")
+	master_slider.add_theme_icon_override("grabber", diamond_tex)
+	master_slider.add_theme_icon_override("grabber_highlight", diamond_tex)
+	music_slider.add_theme_icon_override("grabber", diamond_tex)
+	music_slider.add_theme_icon_override("grabber_highlight", diamond_tex)
 
 	back_button.pressed.connect(_on_back_pressed)
 	
-	var interactables = [master_slider, music_slider, back_button, %WinBtn, %FullBtn, %BordBtn, %VsyncSwitch]
+	var interactables = [master_slider, music_slider, back_button, %WinOption, %VsyncCheck]
 	_hook_audio(interactables)
 	
 	_play_intro()
-
-func _on_master_changed(val: float) -> void:
-	master_percent.text = str(round(val * 100)) + "%"
-
-func _on_music_changed(val: float) -> void:
-	music_percent.text = str(round(val * 100)) + "%"
 
 func _hook_audio(nodes: Array) -> void:
 	for node in nodes:
