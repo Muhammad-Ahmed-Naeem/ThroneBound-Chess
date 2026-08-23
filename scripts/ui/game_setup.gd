@@ -74,3 +74,7 @@ func _on_start_pressed() -> void:
 		_config.player_color = color_options.get_selected_id()
 		_config.ai_difficulty = diff_options.get_selected_id()
 	SceneTransition.start_match(_config)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_on_back_pressed()

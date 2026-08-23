@@ -42,3 +42,7 @@ func _play_intro() -> void:
 func _on_back_pressed() -> void:
 	await get_tree().create_timer(0.15).timeout
 	SceneTransition.change_scene("res://scenes/ui/main_menu.tscn")
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_on_back_pressed()
