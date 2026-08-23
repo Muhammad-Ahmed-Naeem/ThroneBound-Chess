@@ -1,13 +1,14 @@
 extends Control
 
 @onready var container = $CenterContainer
-@onready var local_btn = $CenterContainer/PanelContainer/Margin/VBox/Tabs/LocalBtn
-@onready var ai_btn = $CenterContainer/PanelContainer/Margin/VBox/Tabs/AiBtn
-@onready var ai_options = $CenterContainer/PanelContainer/Margin/VBox/AiOptions
-@onready var color_options = $CenterContainer/PanelContainer/Margin/VBox/AiOptions/ColorOptions
-@onready var diff_options = $CenterContainer/PanelContainer/Margin/VBox/AiOptions/DiffOptions
-@onready var back_btn = $CenterContainer/PanelContainer/Margin/VBox/ActionButtons/BackBtn
-@onready var start_btn = $CenterContainer/PanelContainer/Margin/VBox/ActionButtons/StartBtn
+@onready var panel = $CenterContainer/PanelContainer
+@onready var local_btn = $CenterContainer/PanelContainer/Margin/MainVBox/GameModeToggle/LocalBtn
+@onready var ai_btn = $CenterContainer/PanelContainer/Margin/MainVBox/GameModeToggle/AiBtn
+@onready var ai_options = $CenterContainer/PanelContainer/Margin/MainVBox/AiOptions
+@onready var color_options = $CenterContainer/PanelContainer/Margin/MainVBox/AiOptions/ColorOptions
+@onready var diff_options = $CenterContainer/PanelContainer/Margin/MainVBox/AiOptions/DiffOptions
+@onready var back_btn = $CenterContainer/PanelContainer/Margin/MainVBox/ActionButtons/BackBtn
+@onready var start_btn = $CenterContainer/PanelContainer/Margin/MainVBox/ActionButtons/StartBtn
 
 @onready var audio_hover = $AudioHover
 @onready var audio_click = $AudioClick
@@ -46,11 +47,11 @@ func _hook_audio(nodes: Array) -> void:
 
 func _play_intro() -> void:
 	modulate.a = 0.0
-	container.position.y += 50
+	panel.position.y += 60
 	
 	var tween = create_tween().set_parallel(true)
-	tween.tween_property(self, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-	tween.tween_property(container, "position:y", container.position.y - 50, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "modulate:a", 1.0, 0.4)
+	tween.tween_property(panel, "position:y", panel.position.y - 60, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 func _on_local_pressed() -> void:
 	_config.game_mode = GameConfiguration.GameMode.LOCAL_2_PLAYER
@@ -65,7 +66,6 @@ func _on_ai_pressed() -> void:
 	local_btn.add_theme_stylebox_override("normal", style_normal)
 
 func _on_back_pressed() -> void:
-	# Add slight delay for sound
 	await get_tree().create_timer(0.15).timeout
 	SceneTransition.change_scene("res://scenes/ui/main_menu.tscn")
 
