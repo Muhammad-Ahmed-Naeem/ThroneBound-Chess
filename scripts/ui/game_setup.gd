@@ -1,13 +1,13 @@
 extends Control
 
 @onready var panel = $PanelContainer
-@onready var local_btn = $PanelContainer/Margin/MainVBox/GameModeToggle/LocalBtn
-@onready var ai_btn = $PanelContainer/Margin/MainVBox/GameModeToggle/AiBtn
-@onready var ai_options = $PanelContainer/Margin/MainVBox/AiOptions
-@onready var color_options = $PanelContainer/Margin/MainVBox/AiOptions/ColorOptions
-@onready var diff_options = $PanelContainer/Margin/MainVBox/AiOptions/DiffOptions
-@onready var back_btn = $PanelContainer/Margin/MainVBox/ActionButtons/BackBtn
-@onready var start_btn = $PanelContainer/Margin/MainVBox/ActionButtons/StartBtn
+@onready var local_btn = %LocalBtn
+@onready var ai_btn = %AiBtn
+@onready var ai_options = %AiOptions
+@onready var color_options = %ColorOptions
+@onready var diff_options = %DiffOptions
+@onready var back_btn = %BackBtn
+@onready var start_btn = %StartBtn
 
 @onready var audio_hover = $AudioHover
 @onready var audio_click = $AudioClick
