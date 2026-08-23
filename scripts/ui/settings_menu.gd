@@ -1,35 +1,40 @@
 extends Control
 
 @onready var panel = $PanelContainer
-@onready var master_slider = $PanelContainer/Margin/MainVBox/SettingsGrid/MasterSlider
-@onready var music_slider = $PanelContainer/Margin/MainVBox/SettingsGrid/MusicSlider
-@onready var sfx_slider = $PanelContainer/Margin/MainVBox/SettingsGrid/SfxSlider
-@onready var window_option = $PanelContainer/Margin/MainVBox/SettingsGrid/WindowOption
-@onready var back_button = $PanelContainer/Margin/MainVBox/BackBtn
+@onready var master_slider = %MasterSlider
+@onready var music_slider = %MusicSlider
+@onready var master_percent = %MasterPercent
+@onready var music_percent = %MusicPercent
+@onready var back_button = %BackBtn
 
 @onready var audio_hover = $AudioHover
 @onready var audio_click = $AudioClick
 
 func _ready() -> void:
-	# IMPORTANT: The default grabber icons have been disabled in the theme overrides via settings_menu.tscn.
-	# You need to assign your custom 32x32 pixel `diamond_grabber.png` asset to the 
-	# `theme_override_icons/grabber` and `theme_override_icons/grabber_highlight` 
-	# properties on the HSlider nodes to complete the custom slider styling.
+	var lion_tex = load("res://assets/textures/ui/lion_grabber.jpg")
+	master_slider.add_theme_icon_override("grabber", lion_tex)
+	master_slider.add_theme_icon_override("grabber_highlight", lion_tex)
+	music_slider.add_theme_icon_override("grabber", lion_tex)
+	music_slider.add_theme_icon_override("grabber_highlight", lion_tex)
 	
-	# Or, since it's already in the assets folder, we can assign it via code here:
-	var diamond_tex = load("res://assets/textures/ui/diamond_grabber.png")
-	master_slider.add_theme_icon_override("grabber", diamond_tex)
-	master_slider.add_theme_icon_override("grabber_highlight", diamond_tex)
-	music_slider.add_theme_icon_override("grabber", diamond_tex)
-	music_slider.add_theme_icon_override("grabber_highlight", diamond_tex)
-	sfx_slider.add_theme_icon_override("grabber", diamond_tex)
-	sfx_slider.add_theme_icon_override("grabber_highlight", diamond_tex)
+	master_slider.value_changed.connect(_on_master_changed)
+	music_slider.value_changed.connect(_on_music_changed)
+	
+	_on_master_changed(master_slider.value)
+	_on_music_changed(music_slider.value)
 
 	back_button.pressed.connect(_on_back_pressed)
 	
-	_hook_audio([master_slider, music_slider, sfx_slider, window_option, back_button])
+	var interactables = [master_slider, music_slider, back_button, %WinBtn, %FullBtn, %BordBtn, %VsyncSwitch, %BoardBtn, %PieceBtn]
+	_hook_audio(interactables)
 	
 	_play_intro()
+
+func _on_master_changed(val: float) -> void:
+	master_percent.text = str(round(val * 100)) + "%"
+
+func _on_music_changed(val: float) -> void:
+	music_percent.text = str(round(val * 100)) + "%"
 
 func _hook_audio(nodes: Array) -> void:
 	for node in nodes:

@@ -7,6 +7,9 @@
 [ext_resource type="AudioStream" path="res://assets/audio/ui/click.wav" id="5_cli"]
 [ext_resource type="Texture2D" path="res://assets/textures/ui/parchment_panel.jpg" id="tex_panel"]
 [ext_resource type="Texture2D" path="res://assets/textures/ui/wood_button.jpg" id="tex_btn"]
+[ext_resource type="Texture2D" path="res://assets/textures/ui/switch_on.jpg" id="tex_switch_on"]
+[ext_resource type="Texture2D" path="res://assets/textures/ui/switch_off.jpg" id="tex_switch_off"]
+[ext_resource type="Texture2D" path="res://assets/textures/ui/brass_cartouche.jpg" id="tex_cartouche"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_Panel"]
 texture = ExtResource("tex_panel")
@@ -26,54 +29,41 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-expand_margin_top = 5.0
-expand_margin_bottom = 5.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_SliderGrabber"]
-bg_color = Color(0.7, 0.15, 0.15, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.3, 0.05, 0.05, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_top = 5.0
-expand_margin_bottom = 5.0
-
-[sub_resource type="ImageTexture" id="ImageTexture_EmptyGrabber"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_Popup"]
-texture = ExtResource("tex_panel")
-texture_margin_left = 150.0
-texture_margin_top = 150.0
-texture_margin_right = 150.0
-texture_margin_bottom = 150.0
-
-[sub_resource type="Theme" id="Theme_Option"]
-PopupMenu/styles/panel = SubResource("StyleBoxTexture_Popup")
-PopupMenu/colors/font_color = Color(0.2, 0.1, 0.05, 1)
-PopupMenu/colors/font_hover_color = Color(0.6, 0.1, 0.1, 1)
-PopupMenu/font_sizes/font_size = 28
-PopupMenu/fonts/font = ExtResource("2_font")
+expand_margin_top = 8.0
+expand_margin_bottom = 8.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_BtnNormal"]
 texture = ExtResource("tex_btn")
-texture_margin_left = 40.0
-texture_margin_top = 40.0
-texture_margin_right = 40.0
-texture_margin_bottom = 40.0
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
 modulate_color = Color(0.8, 0.8, 0.8, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_BtnHover"]
 texture = ExtResource("tex_btn")
-texture_margin_left = 40.0
-texture_margin_top = 40.0
-texture_margin_right = 40.0
-texture_margin_bottom = 40.0
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
 modulate_color = Color(1.1, 1.1, 1.1, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_BtnActive"]
+texture = ExtResource("tex_btn")
+texture_margin_left = 20.0
+texture_margin_top = 20.0
+texture_margin_right = 20.0
+texture_margin_bottom = 20.0
+modulate_color = Color(1.0, 0.9, 0.6, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_Cartouche"]
+texture = ExtResource("tex_cartouche")
+texture_margin_left = 80.0
+texture_margin_top = 80.0
+texture_margin_right = 80.0
+texture_margin_bottom = 80.0
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_Res"]
 
 [node name="SettingsMenu" type="Control"]
 layout_mode = 3
@@ -105,31 +95,31 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.5)
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-custom_minimum_size = Vector2(900, 600)
+custom_minimum_size = Vector2(1000, 700)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -450.0
-offset_top = -300.0
-offset_right = 450.0
-offset_bottom = 300.0
+offset_left = -500.0
+offset_top = -350.0
+offset_right = 500.0
+offset_bottom = 350.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_Panel")
 
 [node name="Margin" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 120
-theme_override_constants/margin_top = 120
-theme_override_constants/margin_right = 120
-theme_override_constants/margin_bottom = 120
+theme_override_constants/margin_left = 110
+theme_override_constants/margin_top = 110
+theme_override_constants/margin_right = 110
+theme_override_constants/margin_bottom = 100
 
 [node name="MainVBox" type="VBoxContainer" parent="PanelContainer/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 30
+theme_override_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="PanelContainer/Margin/MainVBox"]
 layout_mode = 2
@@ -142,120 +132,263 @@ theme_override_font_sizes/font_size = 48
 text = "SETTINGS"
 horizontal_alignment = 1
 
-[node name="SettingsGrid" type="GridContainer" parent="PanelContainer/Margin/MainVBox"]
-layout_mode = 2
-theme_override_constants/h_separation = 40
-theme_override_constants/v_separation = 40
-columns = 2
-
-[node name="MasterLabel" type="Label" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 28
-text = "Master Volume"
-
-[node name="MasterSlider" type="HSlider" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
-custom_minimum_size = Vector2(350, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_icons/grabber = SubResource("ImageTexture_EmptyGrabber")
-theme_override_icons/grabber_highlight = SubResource("ImageTexture_EmptyGrabber")
-theme_override_styles/slider = SubResource("StyleBoxFlat_SliderTrack")
-theme_override_styles/grabber_area = SubResource("StyleBoxFlat_SliderGrabber")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_SliderGrabber")
-max_value = 1.0
-step = 0.05
-value = 0.8
-
-[node name="MusicLabel" type="Label" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 28
-text = "Music Volume"
-
-[node name="MusicSlider" type="HSlider" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
-custom_minimum_size = Vector2(350, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_icons/grabber = SubResource("ImageTexture_EmptyGrabber")
-theme_override_icons/grabber_highlight = SubResource("ImageTexture_EmptyGrabber")
-theme_override_styles/slider = SubResource("StyleBoxFlat_SliderTrack")
-theme_override_styles/grabber_area = SubResource("StyleBoxFlat_SliderGrabber")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_SliderGrabber")
-max_value = 1.0
-step = 0.05
-value = 0.8
-
-[node name="SfxLabel" type="Label" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 28
-text = "SFX Volume"
-
-[node name="SfxSlider" type="HSlider" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
-custom_minimum_size = Vector2(350, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_icons/grabber = SubResource("ImageTexture_EmptyGrabber")
-theme_override_icons/grabber_highlight = SubResource("ImageTexture_EmptyGrabber")
-theme_override_styles/slider = SubResource("StyleBoxFlat_SliderTrack")
-theme_override_styles/grabber_area = SubResource("StyleBoxFlat_SliderGrabber")
-theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_SliderGrabber")
-max_value = 1.0
-step = 0.05
-value = 0.8
-
-[node name="WindowLabel" type="Label" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 28
-text = "Window Mode"
-
-[node name="WindowOption" type="OptionButton" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
-custom_minimum_size = Vector2(200, 60)
-layout_mode = 2
-size_flags_horizontal = 3
-theme = SubResource("Theme_Option")
-theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
-theme_override_colors/font_hover_color = Color(0.6, 0.1, 0.1, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 28
-theme_override_styles/normal = SubResource("StyleBoxTexture_BtnNormal")
-theme_override_styles/hover = SubResource("StyleBoxTexture_BtnHover")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_BtnHover")
-theme_override_styles/focus = SubResource("StyleBoxTexture_BtnHover")
-item_count = 3
-popup/item_0/text = "Windowed"
-popup/item_0/id = 0
-popup/item_1/text = "Fullscreen"
-popup/item_1/id = 1
-popup/item_2/text = "Borderless"
-popup/item_2/id = 2
-
-[node name="Spacer" type="Control" parent="PanelContainer/Margin/MainVBox"]
+[node name="Columns" type="HBoxContainer" parent="PanelContainer/Margin/MainVBox"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 60
 
-[node name="BackBtn" type="Button" parent="PanelContainer/Margin/MainVBox"]
-custom_minimum_size = Vector2(300, 65)
+[node name="GraphicsVBox" type="VBoxContainer" parent="PanelContainer/Margin/MainVBox/Columns"]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="GraphicsHeader" type="Label" parent="PanelContainer/Margin/MainVBox/Columns/GraphicsVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 28
+text = "Graphics Options"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/Margin/MainVBox/Columns/GraphicsVBox"]
+layout_mode = 2
+
+[node name="ResLabel" type="Label" parent="PanelContainer/Margin/MainVBox/Columns/GraphicsVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "Resolution Mode"
+
+[node name="ResHBox" type="HBoxContainer" parent="PanelContainer/Margin/MainVBox/Columns/GraphicsVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="WinBtn" type="Button" parent="PanelContainer/Margin/MainVBox/Columns/GraphicsVBox/ResHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.851, 0.651, 0.129, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxTexture_BtnNormal")
 theme_override_styles/hover = SubResource("StyleBoxTexture_BtnHover")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_BtnNormal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_BtnActive")
 theme_override_styles/focus = SubResource("StyleBoxTexture_BtnHover")
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_Res")
+text = "Window"
+
+[node name="FullBtn" type="Button" parent="PanelContainer/Margin/MainVBox/Columns/GraphicsVBox/ResHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.851, 0.651, 0.129, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_BtnNormal")
+theme_override_styles/hover = SubResource("StyleBoxTexture_BtnHover")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_BtnActive")
+theme_override_styles/focus = SubResource("StyleBoxTexture_BtnHover")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_Res")
+text = "Full"
+
+[node name="BordBtn" type="Button" parent="PanelContainer/Margin/MainVBox/Columns/GraphicsVBox/ResHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.851, 0.651, 0.129, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_BtnNormal")
+theme_override_styles/hover = SubResource("StyleBoxTexture_BtnHover")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_BtnActive")
+theme_override_styles/focus = SubResource("StyleBoxTexture_BtnHover")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_Res")
+text = "Borderless"
+
+[node name="Spacer" type="Control" parent="PanelContainer/Margin/MainVBox/Columns/GraphicsVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 10)
+
+[node name="VSyncHBox" type="HBoxContainer" parent="PanelContainer/Margin/MainVBox/Columns/GraphicsVBox"]
+layout_mode = 2
+
+[node name="VsyncLabel" type="Label" parent="PanelContainer/Margin/MainVBox/Columns/GraphicsVBox/VSyncHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "Vertical Sync"
+
+[node name="VsyncSwitch" type="TextureButton" parent="PanelContainer/Margin/MainVBox/Columns/GraphicsVBox/VSyncHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(60, 80)
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+texture_normal = ExtResource("tex_switch_off")
+texture_pressed = ExtResource("tex_switch_on")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="GameplayVBox" type="VBoxContainer" parent="PanelContainer/Margin/MainVBox/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="GameplayHeader" type="Label" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 28
+text = "Gameplay Settings"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox"]
+layout_mode = 2
+
+[node name="MasterLabel" type="Label" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "Master Volume"
+
+[node name="MasterHBox" type="HBoxContainer" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="MasterSlider" type="HSlider" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox/MasterHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/slider = SubResource("StyleBoxFlat_SliderTrack")
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="MasterPercent" type="Label" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox/MasterHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "80%"
+horizontal_alignment = 2
+
+[node name="MusicLabel" type="Label" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "Music Volume"
+
+[node name="MusicHBox" type="HBoxContainer" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="MusicSlider" type="HSlider" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox/MusicHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/slider = SubResource("StyleBoxFlat_SliderTrack")
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="MusicPercent" type="Label" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox/MusicHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "80%"
+horizontal_alignment = 2
+
+[node name="BoardHBox" type="HBoxContainer" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox"]
+layout_mode = 2
+
+[node name="BoardLabel" type="Label" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox/BoardHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "Board Skin"
+
+[node name="BoardBtn" type="Button" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox/BoardHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.851, 0.651, 0.129, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_BtnNormal")
+theme_override_styles/hover = SubResource("StyleBoxTexture_BtnHover")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_BtnActive")
+theme_override_styles/focus = SubResource("StyleBoxTexture_BtnHover")
+text = "Classic Wood"
+
+[node name="PieceHBox" type="HBoxContainer" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox"]
+layout_mode = 2
+
+[node name="PieceLabel" type="Label" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox/PieceHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "Piece Style"
+
+[node name="PieceBtn" type="Button" parent="PanelContainer/Margin/MainVBox/Columns/GameplayVBox/PieceHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.851, 0.651, 0.129, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_BtnNormal")
+theme_override_styles/hover = SubResource("StyleBoxTexture_BtnHover")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_BtnActive")
+theme_override_styles/focus = SubResource("StyleBoxTexture_BtnHover")
+text = "Standard"
+
+[node name="BackBtn" type="Button" parent="PanelContainer/Margin/MainVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.1, 0.05, 0.02, 1)
+theme_override_colors/font_hover_color = Color(0.4, 0.1, 0.1, 1)
+theme_override_colors/font_pressed_color = Color(0.851, 0.651, 0.129, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxTexture_Cartouche")
+theme_override_styles/hover = SubResource("StyleBoxTexture_Cartouche")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_Cartouche")
+theme_override_styles/focus = SubResource("StyleBoxTexture_Cartouche")
 text = "BACK"
 
 [node name="AudioHover" type="AudioStreamPlayer" parent="."]
