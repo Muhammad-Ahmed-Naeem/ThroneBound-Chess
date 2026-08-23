@@ -61,18 +61,18 @@ PopupMenu/fonts/font = ExtResource("2_font")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_BtnNormal"]
 texture = ExtResource("tex_btn")
-texture_margin_left = 120.0
-texture_margin_top = 120.0
-texture_margin_right = 120.0
-texture_margin_bottom = 120.0
+texture_margin_left = 40.0
+texture_margin_top = 40.0
+texture_margin_right = 40.0
+texture_margin_bottom = 40.0
 modulate_color = Color(0.8, 0.8, 0.8, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_BtnHover"]
 texture = ExtResource("tex_btn")
-texture_margin_left = 120.0
-texture_margin_top = 120.0
-texture_margin_right = 120.0
-texture_margin_bottom = 120.0
+texture_margin_left = 40.0
+texture_margin_top = 40.0
+texture_margin_right = 40.0
+texture_margin_bottom = 40.0
 modulate_color = Color(1.1, 1.1, 1.1, 1)
 
 [node name="SettingsMenu" type="Control"]
