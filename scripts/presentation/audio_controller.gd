@@ -17,7 +17,7 @@ func _safe_load(path: String) -> AudioStream:
 	return null
 
 func play_movement(pos: Vector3) -> void:
-	_play_3d(_sfx_movement, pos, "Movement")
+	_play_3d(_sfx_movement, pos, "Movement", 8.0) # Boosted volume
 
 func play_capture_impact(pos: Vector3) -> void:
 	_play_3d(_sfx_capture, pos, "Capture Impact")
@@ -25,13 +25,14 @@ func play_capture_impact(pos: Vector3) -> void:
 func play_graveyard_tumble(pos: Vector3) -> void:
 	_play_3d(_sfx_graveyard, pos, "Graveyard Tumble")
 
-func _play_3d(stream: AudioStream, pos: Vector3, event_name: String) -> void:
+func _play_3d(stream: AudioStream, pos: Vector3, event_name: String, volume_db: float = 0.0) -> void:
 	if stream == null:
 		print("[AudioController] Missing stream for event: ", event_name, " at ", pos)
 		return
 		
 	var player = AudioStreamPlayer3D.new()
 	player.stream = stream
+	player.volume_db = volume_db
 	player.position = pos
 	player.autoplay = true
 	

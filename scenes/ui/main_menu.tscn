@@ -9,6 +9,16 @@
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_Add"]
 blend_mode = 1
 
+[sub_resource type="Gradient" id="Gradient_Glow"]
+offsets = PackedFloat32Array(0, 0.7)
+colors = PackedColorArray(1, 0.8, 0.4, 1, 1, 0.8, 0.4, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_Glow"]
+gradient = SubResource("Gradient_Glow")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.8, 0.5)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_Focus"]
 
 [node name="MainMenu" type="Control"]
@@ -52,7 +62,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_Focus")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_Focus")
 flat = true
 
-[node name="Glow" type="ColorRect" parent="Background/Hotspots/PlayBtn"]
+[node name="Glow" type="TextureRect" parent="Background/Hotspots/PlayBtn"]
 material = SubResource("CanvasItemMaterial_Add")
 layout_mode = 1
 anchors_preset = 15
@@ -61,7 +71,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(1, 0.8, 0.4, 0)
+texture = SubResource("GradientTexture2D_Glow")
+expand_mode = 1
 
 [node name="SettingsBtn" type="Button" parent="Background/Hotspots"]
 layout_mode = 1
@@ -76,7 +87,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_Focus")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_Focus")
 flat = true
 
-[node name="Glow" type="ColorRect" parent="Background/Hotspots/SettingsBtn"]
+[node name="Glow" type="TextureRect" parent="Background/Hotspots/SettingsBtn"]
 material = SubResource("CanvasItemMaterial_Add")
 layout_mode = 1
 anchors_preset = 15
@@ -85,7 +96,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(1, 0.8, 0.4, 0)
+texture = SubResource("GradientTexture2D_Glow")
+expand_mode = 1
 
 [node name="QuitBtn" type="Button" parent="Background/Hotspots"]
 layout_mode = 1
@@ -100,7 +112,7 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_Focus")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_Focus")
 flat = true
 
-[node name="Glow" type="ColorRect" parent="Background/Hotspots/QuitBtn"]
+[node name="Glow" type="TextureRect" parent="Background/Hotspots/QuitBtn"]
 material = SubResource("CanvasItemMaterial_Add")
 layout_mode = 1
 anchors_preset = 15
@@ -109,7 +121,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(1, 0.8, 0.4, 0)
+texture = SubResource("GradientTexture2D_Glow")
+expand_mode = 1
 
 [node name="AudioAmbient" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_amb")

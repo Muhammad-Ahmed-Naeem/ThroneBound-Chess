@@ -23,7 +23,7 @@ func _ready() -> void:
 		
 		# Ensure glow is invisible initially
 		var glow = btn.get_node("Glow")
-		glow.color.a = 0.0
+		glow.modulate.a = 0.0
 	
 	# Start with background completely dark, then fade in
 	background.modulate = Color(0, 0, 0, 1)
@@ -37,20 +37,20 @@ func _on_button_hover(btn: Button) -> void:
 	audio_hover.play()
 	var glow = btn.get_node("Glow")
 	var tween = create_tween()
-	tween.tween_property(glow, "color:a", 0.4, 0.2).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(glow, "modulate:a", 0.6, 0.2).set_trans(Tween.TRANS_SINE)
 
 func _on_button_unhover(btn: Button) -> void:
 	var glow = btn.get_node("Glow")
 	var tween = create_tween()
-	tween.tween_property(glow, "color:a", 0.0, 0.2).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(glow, "modulate:a", 0.0, 0.2).set_trans(Tween.TRANS_SINE)
 
 func _on_button_down(btn: Button) -> void:
 	audio_click.play()
 	var glow = btn.get_node("Glow")
 	var tween = create_tween()
 	# Pulse brighter on click
-	tween.tween_property(glow, "color:a", 0.8, 0.05).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(glow, "color:a", 0.4, 0.1).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(glow, "modulate:a", 1.0, 0.05).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(glow, "modulate:a", 0.6, 0.1).set_trans(Tween.TRANS_SINE)
 
 func _on_button_pressed(btn: Button) -> void:
 	# Small delay to allow the pulse animation and sound to register
