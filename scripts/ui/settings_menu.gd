@@ -11,7 +11,7 @@ extends Control
 @onready var audio_click = $AudioClick
 
 func _ready() -> void:
-	var lion_tex = load("res://assets/textures/ui/lion_grabber.jpg")
+	var lion_tex = load("res://assets/textures/ui/lion_grabber.png")
 	master_slider.add_theme_icon_override("grabber", lion_tex)
 	master_slider.add_theme_icon_override("grabber_highlight", lion_tex)
 	music_slider.add_theme_icon_override("grabber", lion_tex)
@@ -25,7 +25,7 @@ func _ready() -> void:
 
 	back_button.pressed.connect(_on_back_pressed)
 	
-	var interactables = [master_slider, music_slider, back_button, %WinBtn, %FullBtn, %BordBtn, %VsyncSwitch, %BoardBtn, %PieceBtn]
+	var interactables = [master_slider, music_slider, back_button, %WinBtn, %FullBtn, %BordBtn, %VsyncSwitch]
 	_hook_audio(interactables)
 	
 	_play_intro()
