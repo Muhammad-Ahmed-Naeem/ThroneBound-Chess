@@ -3,82 +3,77 @@
 [ext_resource type="Script" path="res://scripts/ui/settings_menu.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/textures/ui/main_menu_bg.jpg" id="2_bg"]
 [ext_resource type="FontFile" path="res://assets/fonts/Cinzel.ttf" id="2_font"]
-[ext_resource type="Shader" path="res://assets/shaders/frosted_glass.gdshader" id="3_shader"]
 [ext_resource type="AudioStream" path="res://assets/audio/ui/hover.wav" id="4_hov"]
 [ext_resource type="AudioStream" path="res://assets/audio/ui/click.wav" id="5_cli"]
+[ext_resource type="Texture2D" path="res://assets/textures/ui/parchment_panel.jpg" id="tex_panel"]
+[ext_resource type="Texture2D" path="res://assets/textures/ui/wood_button.jpg" id="tex_btn"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_Glass"]
-shader = ExtResource("3_shader")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Panel"]
-bg_color = Color(0, 0, 0, 0)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.851, 0.651, 0.129, 1)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_Panel"]
+texture = ExtResource("tex_panel")
+texture_margin_left = 150.0
+texture_margin_top = 150.0
+texture_margin_right = 150.0
+texture_margin_bottom = 150.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_SliderTrack"]
-bg_color = Color(0.078, 0.078, 0.11, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.02, 0.02, 0.03, 1)
+bg_color = Color(0.25, 0.15, 0.08, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.1, 0.05, 0.02, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 expand_margin_top = 5.0
 expand_margin_bottom = 5.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_SliderGrabber"]
-bg_color = Color(0.851, 0.651, 0.129, 1)
+bg_color = Color(0.7, 0.15, 0.15, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.05, 0.05, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 expand_margin_top = 5.0
 expand_margin_bottom = 5.0
 
 [sub_resource type="ImageTexture" id="ImageTexture_EmptyGrabber"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Popup"]
-bg_color = Color(0.102, 0.102, 0.141, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.851, 0.651, 0.129, 1)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_Popup"]
+texture = ExtResource("tex_panel")
+texture_margin_left = 150.0
+texture_margin_top = 150.0
+texture_margin_right = 150.0
+texture_margin_bottom = 150.0
 
 [sub_resource type="Theme" id="Theme_Option"]
-PopupMenu/styles/panel = SubResource("StyleBoxFlat_Popup")
-PopupMenu/colors/font_color = Color(0.9, 0.9, 0.9, 1)
-PopupMenu/colors/font_hover_color = Color(0.851, 0.651, 0.129, 1)
+PopupMenu/styles/panel = SubResource("StyleBoxTexture_Popup")
+PopupMenu/colors/font_color = Color(0.2, 0.1, 0.05, 1)
+PopupMenu/colors/font_hover_color = Color(0.6, 0.1, 0.1, 1)
 PopupMenu/font_sizes/font_size = 28
 PopupMenu/fonts/font = ExtResource("2_font")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BtnNormal"]
-bg_color = Color(0.102, 0.102, 0.141, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.05, 0.05, 0.08, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_BtnNormal"]
+texture = ExtResource("tex_btn")
+texture_margin_left = 120.0
+texture_margin_top = 120.0
+texture_margin_right = 120.0
+texture_margin_bottom = 120.0
+modulate_color = Color(0.8, 0.8, 0.8, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BtnHover"]
-bg_color = Color(0.102, 0.102, 0.141, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.851, 0.651, 0.129, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-shadow_color = Color(0, 0.898, 1, 0.3)
-shadow_size = 8
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_BtnHover"]
+texture = ExtResource("tex_btn")
+texture_margin_left = 120.0
+texture_margin_top = 120.0
+texture_margin_right = 120.0
+texture_margin_bottom = 120.0
+modulate_color = Color(1.1, 1.1, 1.1, 1)
 
 [node name="SettingsMenu" type="Control"]
 layout_mode = 3
@@ -107,10 +102,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.4)
+color = Color(0, 0, 0, 0.5)
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-material = SubResource("ShaderMaterial_Glass")
 custom_minimum_size = Vector2(900, 600)
 layout_mode = 1
 anchors_preset = 8
@@ -124,25 +118,25 @@ offset_right = 450.0
 offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_Panel")
+theme_override_styles/panel = SubResource("StyleBoxTexture_Panel")
 
 [node name="Margin" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 60
-theme_override_constants/margin_right = 60
-theme_override_constants/margin_bottom = 60
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 120
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 120
 
 [node name="MainVBox" type="VBoxContainer" parent="PanelContainer/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 40
+theme_override_constants/separation = 30
 
 [node name="TitleLabel" type="Label" parent="PanelContainer/Margin/MainVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.851, 0.651, 0.129, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_colors/font_shadow_color = Color(0.8, 0.7, 0.5, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 48
 text = "SETTINGS"
@@ -151,12 +145,12 @@ horizontal_alignment = 1
 [node name="SettingsGrid" type="GridContainer" parent="PanelContainer/Margin/MainVBox"]
 layout_mode = 2
 theme_override_constants/h_separation = 40
-theme_override_constants/v_separation = 50
+theme_override_constants/v_separation = 40
 columns = 2
 
 [node name="MasterLabel" type="Label" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 text = "Master Volume"
@@ -177,7 +171,7 @@ value = 0.8
 
 [node name="MusicLabel" type="Label" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 text = "Music Volume"
@@ -198,7 +192,7 @@ value = 0.8
 
 [node name="SfxLabel" type="Label" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 text = "SFX Volume"
@@ -219,7 +213,7 @@ value = 0.8
 
 [node name="WindowLabel" type="Label" parent="PanelContainer/Margin/MainVBox/SettingsGrid"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 text = "Window Mode"
@@ -229,14 +223,14 @@ custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
 size_flags_horizontal = 3
 theme = SubResource("Theme_Option")
-theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_colors/font_hover_color = Color(0.851, 0.651, 0.129, 1)
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_colors/font_hover_color = Color(0.6, 0.1, 0.1, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
-theme_override_styles/normal = SubResource("StyleBoxFlat_BtnNormal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_BtnHover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnHover")
-theme_override_styles/focus = SubResource("StyleBoxFlat_BtnHover")
+theme_override_styles/normal = SubResource("StyleBoxTexture_BtnNormal")
+theme_override_styles/hover = SubResource("StyleBoxTexture_BtnHover")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_BtnHover")
+theme_override_styles/focus = SubResource("StyleBoxTexture_BtnHover")
 item_count = 3
 popup/item_0/text = "Windowed"
 popup/item_0/id = 0
@@ -254,14 +248,14 @@ custom_minimum_size = Vector2(300, 65)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_colors/font_hover_color = Color(0.851, 0.651, 0.129, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(0.851, 0.651, 0.129, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
-theme_override_styles/normal = SubResource("StyleBoxFlat_BtnNormal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_BtnHover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnNormal")
-theme_override_styles/focus = SubResource("StyleBoxFlat_BtnHover")
+theme_override_styles/normal = SubResource("StyleBoxTexture_BtnNormal")
+theme_override_styles/hover = SubResource("StyleBoxTexture_BtnHover")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_BtnNormal")
+theme_override_styles/focus = SubResource("StyleBoxTexture_BtnHover")
 text = "BACK"
 
 [node name="AudioHover" type="AudioStreamPlayer" parent="."]
