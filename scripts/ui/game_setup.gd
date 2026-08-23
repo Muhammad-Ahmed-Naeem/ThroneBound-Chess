@@ -1,14 +1,13 @@
 extends Control
 
-@onready var container = $CenterContainer
-@onready var panel = $CenterContainer/PanelContainer
-@onready var local_btn = $CenterContainer/PanelContainer/Margin/MainVBox/GameModeToggle/LocalBtn
-@onready var ai_btn = $CenterContainer/PanelContainer/Margin/MainVBox/GameModeToggle/AiBtn
-@onready var ai_options = $CenterContainer/PanelContainer/Margin/MainVBox/AiOptions
-@onready var color_options = $CenterContainer/PanelContainer/Margin/MainVBox/AiOptions/ColorOptions
-@onready var diff_options = $CenterContainer/PanelContainer/Margin/MainVBox/AiOptions/DiffOptions
-@onready var back_btn = $CenterContainer/PanelContainer/Margin/MainVBox/ActionButtons/BackBtn
-@onready var start_btn = $CenterContainer/PanelContainer/Margin/MainVBox/ActionButtons/StartBtn
+@onready var panel = $PanelContainer
+@onready var local_btn = $PanelContainer/Margin/MainVBox/GameModeToggle/LocalBtn
+@onready var ai_btn = $PanelContainer/Margin/MainVBox/GameModeToggle/AiBtn
+@onready var ai_options = $PanelContainer/Margin/MainVBox/AiOptions
+@onready var color_options = $PanelContainer/Margin/MainVBox/AiOptions/ColorOptions
+@onready var diff_options = $PanelContainer/Margin/MainVBox/AiOptions/DiffOptions
+@onready var back_btn = $PanelContainer/Margin/MainVBox/ActionButtons/BackBtn
+@onready var start_btn = $PanelContainer/Margin/MainVBox/ActionButtons/StartBtn
 
 @onready var audio_hover = $AudioHover
 @onready var audio_click = $AudioClick

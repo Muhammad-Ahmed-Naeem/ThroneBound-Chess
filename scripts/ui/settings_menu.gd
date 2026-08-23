@@ -1,11 +1,11 @@
 extends Control
 
-@onready var panel = $CenterContainer/PanelContainer
-@onready var master_slider = $CenterContainer/PanelContainer/Margin/MainVBox/SettingsGrid/MasterSlider
-@onready var music_slider = $CenterContainer/PanelContainer/Margin/MainVBox/SettingsGrid/MusicSlider
-@onready var sfx_slider = $CenterContainer/PanelContainer/Margin/MainVBox/SettingsGrid/SfxSlider
-@onready var window_option = $CenterContainer/PanelContainer/Margin/MainVBox/SettingsGrid/WindowOption
-@onready var back_button = $CenterContainer/PanelContainer/Margin/MainVBox/BackBtn
+@onready var panel = $PanelContainer
+@onready var master_slider = $PanelContainer/Margin/MainVBox/SettingsGrid/MasterSlider
+@onready var music_slider = $PanelContainer/Margin/MainVBox/SettingsGrid/MusicSlider
+@onready var sfx_slider = $PanelContainer/Margin/MainVBox/SettingsGrid/SfxSlider
+@onready var window_option = $PanelContainer/Margin/MainVBox/SettingsGrid/WindowOption
+@onready var back_button = $PanelContainer/Margin/MainVBox/BackBtn
 
 @onready var audio_hover = $AudioHover
 @onready var audio_click = $AudioClick

@@ -108,32 +108,35 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="."]
 material = SubResource("ShaderMaterial_Glass")
 custom_minimum_size = Vector2(1000, 700)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -500.0
+offset_top = -350.0
+offset_right = 500.0
+offset_bottom = 350.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_Panel")
 
-[node name="Margin" type="MarginContainer" parent="CenterContainer/PanelContainer"]
+[node name="Margin" type="MarginContainer" parent="PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 60
 theme_override_constants/margin_top = 60
 theme_override_constants/margin_right = 60
 theme_override_constants/margin_bottom = 60
 
-[node name="MainVBox" type="VBoxContainer" parent="CenterContainer/PanelContainer/Margin"]
+[node name="MainVBox" type="VBoxContainer" parent="PanelContainer/Margin"]
 layout_mode = 2
 theme_override_constants/separation = 40
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/Margin/MainVBox"]
+[node name="TitleLabel" type="Label" parent="PanelContainer/Margin/MainVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.851, 0.651, 0.129, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -144,12 +147,12 @@ theme_override_font_sizes/font_size = 52
 text = "GAME SETUP"
 horizontal_alignment = 1
 
-[node name="GameModeToggle" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/MainVBox"]
+[node name="GameModeToggle" type="HBoxContainer" parent="PanelContainer/Margin/MainVBox"]
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
-[node name="LocalBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/MainVBox/GameModeToggle"]
+[node name="LocalBtn" type="Button" parent="PanelContainer/Margin/MainVBox/GameModeToggle"]
 custom_minimum_size = Vector2(300, 70)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
@@ -163,7 +166,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnActive")
 theme_override_styles/focus = SubResource("StyleBoxFlat_BtnHover")
 text = "LOCAL 2 PLAYER"
 
-[node name="AiBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/MainVBox/GameModeToggle"]
+[node name="AiBtn" type="Button" parent="PanelContainer/Margin/MainVBox/GameModeToggle"]
 custom_minimum_size = Vector2(300, 70)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
@@ -177,21 +180,21 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnActive")
 theme_override_styles/focus = SubResource("StyleBoxFlat_BtnHover")
 text = "VS AI"
 
-[node name="AiOptions" type="GridContainer" parent="CenterContainer/PanelContainer/Margin/MainVBox"]
+[node name="AiOptions" type="GridContainer" parent="PanelContainer/Margin/MainVBox"]
 visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 40
 theme_override_constants/v_separation = 30
 columns = 2
 
-[node name="ColorLabel" type="Label" parent="CenterContainer/PanelContainer/Margin/MainVBox/AiOptions"]
+[node name="ColorLabel" type="Label" parent="PanelContainer/Margin/MainVBox/AiOptions"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 28
 text = "Player Color"
 
-[node name="ColorOptions" type="OptionButton" parent="CenterContainer/PanelContainer/Margin/MainVBox/AiOptions"]
+[node name="ColorOptions" type="OptionButton" parent="PanelContainer/Margin/MainVBox/AiOptions"]
 custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -205,14 +208,14 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_BtnHover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnHover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_BtnHover")
 
-[node name="DiffLabel" type="Label" parent="CenterContainer/PanelContainer/Margin/MainVBox/AiOptions"]
+[node name="DiffLabel" type="Label" parent="PanelContainer/Margin/MainVBox/AiOptions"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 28
 text = "Difficulty"
 
-[node name="DiffOptions" type="OptionButton" parent="CenterContainer/PanelContainer/Margin/MainVBox/AiOptions"]
+[node name="DiffOptions" type="OptionButton" parent="PanelContainer/Margin/MainVBox/AiOptions"]
 custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -226,16 +229,16 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_BtnHover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnHover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_BtnHover")
 
-[node name="Spacer" type="Control" parent="CenterContainer/PanelContainer/Margin/MainVBox"]
+[node name="Spacer" type="Control" parent="PanelContainer/Margin/MainVBox"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ActionButtons" type="HBoxContainer" parent="CenterContainer/PanelContainer/Margin/MainVBox"]
+[node name="ActionButtons" type="HBoxContainer" parent="PanelContainer/Margin/MainVBox"]
 layout_mode = 2
 theme_override_constants/separation = 40
 alignment = 1
 
-[node name="BackBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/MainVBox/ActionButtons"]
+[node name="BackBtn" type="Button" parent="PanelContainer/Margin/MainVBox/ActionButtons"]
 custom_minimum_size = Vector2(250, 70)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
@@ -249,7 +252,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnActive")
 theme_override_styles/focus = SubResource("StyleBoxFlat_BtnHover")
 text = "BACK"
 
-[node name="StartBtn" type="Button" parent="CenterContainer/PanelContainer/Margin/MainVBox/ActionButtons"]
+[node name="StartBtn" type="Button" parent="PanelContainer/Margin/MainVBox/ActionButtons"]
 custom_minimum_size = Vector2(400, 70)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
