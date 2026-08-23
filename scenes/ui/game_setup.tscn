@@ -1,28 +1,25 @@
 [gd_scene format=3 uid="uid://gamesetup123"]
 
 [ext_resource type="Script" path="res://scripts/ui/game_setup.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/textures/ui/main_menu_bg.jpg" id="2_bg"]
-[ext_resource type="FontFile" path="res://assets/fonts/Cinzel.ttf" id="3_font"]
-[ext_resource type="Shader" path="res://assets/shaders/frosted_glass.gdshader" id="4_shader"]
-[ext_resource type="AudioStream" path="res://assets/audio/ui/hover.wav" id="5_hov"]
-[ext_resource type="AudioStream" path="res://assets/audio/ui/click.wav" id="6_cli"]
+[ext_resource type="FontFile" path="res://assets/fonts/Cinzel.ttf" id="2_font"]
+[ext_resource type="Shader" path="res://assets/shaders/frosted_glass.gdshader" id="3_shader"]
+[ext_resource type="AudioStream" path="res://assets/audio/ui/hover.wav" id="4_hov"]
+[ext_resource type="AudioStream" path="res://assets/audio/ui/click.wav" id="5_cli"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_Glass"]
-shader = ExtResource("4_shader")
-shader_parameter/blur_amount = 4.0
-shader_parameter/tint_color = Color(0.165, 0.141, 0.22, 0.9)
+shader = ExtResource("3_shader")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Panel"]
 bg_color = Color(0, 0, 0, 0)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
 border_color = Color(0.851, 0.651, 0.129, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BtnNormal"]
 bg_color = Color(0.102, 0.102, 0.141, 1)
@@ -77,7 +74,7 @@ PopupMenu/styles/panel = SubResource("StyleBoxFlat_Popup")
 PopupMenu/colors/font_color = Color(0.9, 0.9, 0.9, 1)
 PopupMenu/colors/font_hover_color = Color(0.851, 0.651, 0.129, 1)
 PopupMenu/font_sizes/font_size = 28
-PopupMenu/fonts/font = ExtResource("3_font")
+PopupMenu/fonts/font = ExtResource("2_font")
 
 [node name="GameSetupMenu" type="Control"]
 layout_mode = 3
@@ -88,17 +85,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
 
-[node name="Background" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_bg")
-expand_mode = 1
-stretch_mode = 6
-
 [node name="Dimmer" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -106,21 +92,21 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
+color = Color(0, 0, 0, 0.4)
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 material = SubResource("ShaderMaterial_Glass")
-custom_minimum_size = Vector2(1000, 700)
+custom_minimum_size = Vector2(900, 600)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -500.0
-offset_top = -350.0
-offset_right = 500.0
-offset_bottom = 350.0
+offset_left = -450.0
+offset_top = -300.0
+offset_right = 450.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_Panel")
@@ -142,8 +128,8 @@ theme_override_colors/font_color = Color(0.851, 0.651, 0.129, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 52
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 48
 text = "GAME SETUP"
 horizontal_alignment = 1
 
@@ -153,12 +139,12 @@ theme_override_constants/separation = 20
 alignment = 1
 
 [node name="LocalBtn" type="Button" parent="PanelContainer/Margin/MainVBox/GameModeToggle"]
-custom_minimum_size = Vector2(300, 70)
+custom_minimum_size = Vector2(300, 65)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_hover_color = Color(0.851, 0.651, 0.129, 1)
 theme_override_colors/font_pressed_color = Color(0.851, 0.651, 0.129, 1)
-theme_override_fonts/font = ExtResource("3_font")
+theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_BtnActive")
 theme_override_styles/hover = SubResource("StyleBoxFlat_BtnHover")
@@ -167,12 +153,12 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_BtnHover")
 text = "LOCAL 2 PLAYER"
 
 [node name="AiBtn" type="Button" parent="PanelContainer/Margin/MainVBox/GameModeToggle"]
-custom_minimum_size = Vector2(300, 70)
+custom_minimum_size = Vector2(300, 65)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_hover_color = Color(0.851, 0.651, 0.129, 1)
 theme_override_colors/font_pressed_color = Color(0.851, 0.651, 0.129, 1)
-theme_override_fonts/font = ExtResource("3_font")
+theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_BtnNormal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_BtnHover")
@@ -190,7 +176,7 @@ columns = 2
 [node name="ColorLabel" type="Label" parent="PanelContainer/Margin/MainVBox/AiOptions"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_fonts/font = ExtResource("3_font")
+theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 text = "Player Color"
 
@@ -201,7 +187,7 @@ size_flags_horizontal = 3
 theme = SubResource("Theme_Option")
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_hover_color = Color(0.851, 0.651, 0.129, 1)
-theme_override_fonts/font = ExtResource("3_font")
+theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_BtnNormal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_BtnHover")
@@ -211,7 +197,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_BtnHover")
 [node name="DiffLabel" type="Label" parent="PanelContainer/Margin/MainVBox/AiOptions"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
-theme_override_fonts/font = ExtResource("3_font")
+theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 text = "Difficulty"
 
@@ -222,7 +208,7 @@ size_flags_horizontal = 3
 theme = SubResource("Theme_Option")
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_hover_color = Color(0.851, 0.651, 0.129, 1)
-theme_override_fonts/font = ExtResource("3_font")
+theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_BtnNormal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_BtnHover")
@@ -239,12 +225,12 @@ theme_override_constants/separation = 40
 alignment = 1
 
 [node name="BackBtn" type="Button" parent="PanelContainer/Margin/MainVBox/ActionButtons"]
-custom_minimum_size = Vector2(250, 70)
+custom_minimum_size = Vector2(250, 65)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_hover_color = Color(0.851, 0.651, 0.129, 1)
 theme_override_colors/font_pressed_color = Color(0.851, 0.651, 0.129, 1)
-theme_override_fonts/font = ExtResource("3_font")
+theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_BtnNormal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_BtnHover")
@@ -253,12 +239,12 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_BtnHover")
 text = "BACK"
 
 [node name="StartBtn" type="Button" parent="PanelContainer/Margin/MainVBox/ActionButtons"]
-custom_minimum_size = Vector2(400, 70)
+custom_minimum_size = Vector2(400, 65)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_hover_color = Color(0.851, 0.651, 0.129, 1)
 theme_override_colors/font_pressed_color = Color(0.851, 0.651, 0.129, 1)
-theme_override_fonts/font = ExtResource("3_font")
+theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_BtnNormal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_BtnHover")
@@ -267,9 +253,9 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_BtnHover")
 text = "START GAME"
 
 [node name="AudioHover" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("5_hov")
+stream = ExtResource("4_hov")
 volume_db = -5.0
 
 [node name="AudioClick" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("6_cli")
+stream = ExtResource("5_cli")
 volume_db = 0.0
