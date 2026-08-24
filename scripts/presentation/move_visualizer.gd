@@ -39,7 +39,7 @@ func show_last_move(move: ChessMove, square_size: float) -> void:
 		h.queue_free()
 	_last_move_highlights.clear()
 	
-	for pos in [move.from_position, move.to_position]:
+	for pos in [move.to_position]:
 		var highlight = MeshInstance3D.new()
 		var plane = PlaneMesh.new()
 		plane.size = Vector2(square_size, square_size)
