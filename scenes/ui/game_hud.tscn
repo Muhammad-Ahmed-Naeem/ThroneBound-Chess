@@ -1,6 +1,7 @@
-[gd_scene format=3 uid="uid://gamehud123"]
+[gd_scene load_steps=3 format=3 uid="uid://gamehud123"]
 
 [ext_resource type="Script" path="res://scripts/ui/game_hud.gd" id="1_script"]
+[ext_resource type="FontFile" path="res://assets/fonts/Cinzel.ttf" id="2_font"]
 
 [node name="GameHUD" type="Control"]
 layout_mode = 3
@@ -12,34 +13,157 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_script")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="TopMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
 mouse_filter = 2
-theme_override_constants/margin_top = 30
+theme_override_constants/margin_top = 25
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TopMarginContainer"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 5
 
-[node name="TurnLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="TurnLabel" type="Label" parent="TopMarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 32
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
 text = "WHITE TO MOVE"
 horizontal_alignment = 1
 
-[node name="CheckLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="CheckLabel" type="Label" parent="TopMarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.2, 0.2, 1)
+theme_override_colors/font_color = Color(0.95, 0.25, 0.25, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 24
 text = "CHECK"
 horizontal_alignment = 1
+
+[node name="BlackHUDMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 30.0
+offset_top = 25.0
+offset_right = 450.0
+offset_bottom = 110.0
+mouse_filter = 2
+
+[node name="BlackVBox" type="VBoxContainer" parent="BlackHUDMargin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderHBox" type="HBoxContainer" parent="BlackHUDMargin/BlackVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="PlayerLabel" type="Label" parent="BlackHUDMargin/BlackVBox/HeaderHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "BLACK"
+
+[node name="FallenLabel" type="Label" parent="BlackHUDMargin/BlackVBox/HeaderHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.6, 0.5, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 13
+text = "FALLEN"
+
+[node name="TrophyHBox" type="HBoxContainer" parent="BlackHUDMargin/BlackVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="BlackIconsHBox" type="HBoxContainer" parent="BlackHUDMargin/BlackVBox/TrophyHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="BlackAdvantageLabel" type="Label" parent="BlackHUDMargin/BlackVBox/TrophyHBox"]
+unique_name_in_owner = true
 visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "+0"
+
+[node name="WhiteHUDMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -105.0
+offset_right = 450.0
+offset_bottom = -20.0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="WhiteVBox" type="VBoxContainer" parent="WhiteHUDMargin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderHBox" type="HBoxContainer" parent="WhiteHUDMargin/WhiteVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="PlayerLabel" type="Label" parent="WhiteHUDMargin/WhiteVBox/HeaderHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.95, 0.9, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "WHITE"
+
+[node name="FallenLabel" type="Label" parent="WhiteHUDMargin/WhiteVBox/HeaderHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.6, 0.5, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 13
+text = "FALLEN"
+
+[node name="TrophyHBox" type="HBoxContainer" parent="WhiteHUDMargin/WhiteVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="WhiteIconsHBox" type="HBoxContainer" parent="WhiteHUDMargin/WhiteVBox/TrophyHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="WhiteAdvantageLabel" type="Label" parent="WhiteHUDMargin/WhiteVBox/TrophyHBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.3, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "+0"

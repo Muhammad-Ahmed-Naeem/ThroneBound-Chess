@@ -100,6 +100,8 @@ func start_match() -> void:
 	_generate_pieces()
 	
 	if game_hud:
+		if game_hud.has_method("reset_hud"):
+			game_hud.reset_hud()
 		game_hud.update_hud(_game.get_current_turn(), _game.is_current_player_in_check())
 		
 	if result_screen:
@@ -183,6 +185,8 @@ func _on_move_executed(move: ChessMove) -> void:
 	var defender_pc: PieceController = null
 	
 	if move.captured_piece != null:
+		if game_hud and game_hud.has_method("record_capture"):
+			game_hud.record_capture(move.captured_piece, move.moving_piece.color)
 		# Find the exact nodes for attacker and defender by reference, NOT by position
 		# (since MoveExecutor already changed moving_piece.position)
 		for pc in old_pieces_list:

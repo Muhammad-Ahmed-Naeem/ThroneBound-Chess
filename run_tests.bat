@@ -11,4 +11,5 @@ echo Running tests...
 %GODOT% --headless -s tests\test_chess_game.gd
 %GODOT% --headless -s tests\test_fen_generator.gd
 %GODOT% --headless -s tests\test_stockfish_adapter.gd
+%GODOT% --headless -s tests\test_captured_hud.gd
 echo Done.
