@@ -119,7 +119,7 @@ func _render_trophies(capturing_color: int, just_updated_type: int, is_new_entry
 	_get_nodes()
 	var container = white_icons_container if capturing_color == ChessTypes.PieceColor.WHITE else black_icons_container
 	var dict = _captured_by_white if capturing_color == ChessTypes.PieceColor.WHITE else _captured_by_black
-	var piece_modulate = Color(0.25, 0.25, 0.3, 0.95) if capturing_color == ChessTypes.PieceColor.WHITE else Color(0.95, 0.95, 0.9, 0.95)
+	var piece_modulate = Color(0.3, 0.3, 0.35, 1.0) if capturing_color == ChessTypes.PieceColor.WHITE else Color(0.95, 0.95, 0.9, 1.0)
 	
 	if not is_instance_valid(container): return
 	
@@ -152,13 +152,13 @@ func _create_trophy_entry(node_name: String, piece_type: int, modulate_color: Co
 	var hbox = HBoxContainer.new()
 	hbox.name = node_name
 	hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hbox.add_theme_constant_override("separation", 2)
+	hbox.add_theme_constant_override("separation", 3)
 	
 	var font_res = load("res://assets/fonts/Cinzel.ttf")
 	
 	var tex_rect = TextureRect.new()
 	tex_rect.name = "Icon"
-	tex_rect.custom_minimum_size = Vector2(26, 26)
+	tex_rect.custom_minimum_size = Vector2(34, 34)
 	tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	tex_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -172,12 +172,12 @@ func _create_trophy_entry(node_name: String, piece_type: int, modulate_color: Co
 	var count_lbl = Label.new()
 	count_lbl.name = "CountLabel"
 	count_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	count_lbl.add_theme_color_override("font_color", Color(0.9, 0.85, 0.7))
+	count_lbl.add_theme_color_override("font_color", Color(0.95, 0.9, 0.8))
 	count_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-	count_lbl.add_theme_constant_override("outline_size", 2)
+	count_lbl.add_theme_constant_override("outline_size", 3)
 	if font_res:
 		count_lbl.add_theme_font_override("font", font_res)
-	count_lbl.add_theme_font_size_override("font_size", 14)
+	count_lbl.add_theme_font_size_override("font_size", 18)
 	count_lbl.visible = false
 	hbox.add_child(count_lbl)
 	
@@ -206,14 +206,14 @@ func _animate_trophy_entry(entry: Control, is_new: bool) -> void:
 	
 	var t = create_tween()
 	if is_new:
-		entry.scale = Vector2(0.3, 0.3)
+		entry.scale = Vector2(0.4, 0.4)
 		entry.modulate.a = 0.0
 		t.tween_property(entry, "modulate:a", 1.0, 0.2)
-		t.parallel().tween_property(entry, "scale", Vector2(1.25, 1.25), 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		t.parallel().tween_property(entry, "scale", Vector2(1.3, 1.3), 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 		t.tween_property(entry, "scale", Vector2.ONE, 0.15).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	else:
 		entry.scale = Vector2(1.0, 1.0)
-		t.tween_property(entry, "scale", Vector2(1.3, 1.3), 0.15).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		t.tween_property(entry, "scale", Vector2(1.35, 1.35), 0.15).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		t.tween_property(entry, "scale", Vector2.ONE, 0.15).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 func _update_material_advantage() -> void:

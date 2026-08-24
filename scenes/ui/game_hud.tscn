@@ -1,7 +1,25 @@
-[gd_scene load_steps=3 format=3 uid="uid://gamehud123"]
+[gd_scene load_steps=6 format=3 uid="uid://gamehud123"]
 
 [ext_resource type="Script" path="res://scripts/ui/game_hud.gd" id="1_script"]
 [ext_resource type="FontFile" path="res://assets/fonts/Cinzel.ttf" id="2_font"]
+[ext_resource type="Texture2D" path="res://assets/ui/black_shield.svg" id="3_black_shield"]
+[ext_resource type="Texture2D" path="res://assets/ui/white_shield.svg" id="4_white_shield"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PlayerCard"]
+bg_color = Color(0.12, 0.1, 0.08, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.28, 0.18, 0.85)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
 
 [node name="GameHUD" type="Control"]
 layout_mode = 3
@@ -47,123 +65,102 @@ theme_override_font_sizes/font_size = 24
 text = "CHECK"
 horizontal_alignment = 1
 
-[node name="BlackHUDMargin" type="MarginContainer" parent="."]
+[node name="BlackPlayerCard" type="PanelContainer" parent="."]
 layout_mode = 1
-anchors_preset = 0
 offset_left = 30.0
 offset_top = 25.0
-offset_right = 450.0
-offset_bottom = 110.0
+offset_right = 150.0
+offset_bottom = 75.0
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_PlayerCard")
 
-[node name="BlackVBox" type="VBoxContainer" parent="BlackHUDMargin"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 4
-
-[node name="HeaderHBox" type="HBoxContainer" parent="BlackHUDMargin/BlackVBox"]
+[node name="HBox" type="HBoxContainer" parent="BlackPlayerCard"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="PlayerLabel" type="Label" parent="BlackHUDMargin/BlackVBox/HeaderHBox"]
+[node name="Avatar" type="TextureRect" parent="BlackPlayerCard/HBox"]
+custom_minimum_size = Vector2(34, 34)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
+mouse_filter = 2
+texture = ExtResource("3_black_shield")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlayerLabel" type="Label" parent="BlackPlayerCard/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.95, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 22
 text = "BLACK"
 
-[node name="FallenLabel" type="Label" parent="BlackHUDMargin/BlackVBox/HeaderHBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.6, 0.5, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 13
-text = "FALLEN"
-
-[node name="TrophyHBox" type="HBoxContainer" parent="BlackHUDMargin/BlackVBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 12
-
-[node name="BlackIconsHBox" type="HBoxContainer" parent="BlackHUDMargin/BlackVBox/TrophyHBox"]
+[node name="BlackIconsHBox" type="HBoxContainer" parent="BlackPlayerCard/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 8
 
-[node name="BlackAdvantageLabel" type="Label" parent="BlackHUDMargin/BlackVBox/TrophyHBox"]
+[node name="BlackAdvantageLabel" type="Label" parent="BlackPlayerCard/HBox"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.8, 0.3, 1)
+theme_override_colors/font_color = Color(0.95, 0.8, 0.25, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 text = "+0"
 
-[node name="WhiteHUDMargin" type="MarginContainer" parent="."]
+[node name="WhitePlayerCard" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 30.0
-offset_top = -105.0
-offset_right = 450.0
-offset_bottom = -20.0
+offset_top = -80.0
+offset_right = 150.0
+offset_bottom = -30.0
 grow_vertical = 0
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_PlayerCard")
 
-[node name="WhiteVBox" type="VBoxContainer" parent="WhiteHUDMargin"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 4
-
-[node name="HeaderHBox" type="HBoxContainer" parent="WhiteHUDMargin/WhiteVBox"]
+[node name="HBox" type="HBoxContainer" parent="WhitePlayerCard"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="PlayerLabel" type="Label" parent="WhiteHUDMargin/WhiteVBox/HeaderHBox"]
+[node name="Avatar" type="TextureRect" parent="WhitePlayerCard/HBox"]
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("4_white_shield")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlayerLabel" type="Label" parent="WhitePlayerCard/HBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.95, 0.9, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 22
 text = "WHITE"
 
-[node name="FallenLabel" type="Label" parent="WhiteHUDMargin/WhiteVBox/HeaderHBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.6, 0.5, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 13
-text = "FALLEN"
-
-[node name="TrophyHBox" type="HBoxContainer" parent="WhiteHUDMargin/WhiteVBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 12
-
-[node name="WhiteIconsHBox" type="HBoxContainer" parent="WhiteHUDMargin/WhiteVBox/TrophyHBox"]
+[node name="WhiteIconsHBox" type="HBoxContainer" parent="WhitePlayerCard/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 8
 
-[node name="WhiteAdvantageLabel" type="Label" parent="WhiteHUDMargin/WhiteVBox/TrophyHBox"]
+[node name="WhiteAdvantageLabel" type="Label" parent="WhitePlayerCard/HBox"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.8, 0.3, 1)
+theme_override_colors/font_color = Color(0.95, 0.8, 0.25, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 24
 text = "+0"
