@@ -5,6 +5,31 @@
 [ext_resource type="AudioStream" path="res://assets/audio/ui/ambient.wav" id="4_amb"]
 [ext_resource type="AudioStream" path="res://assets/audio/ui/hover.wav" id="5_hov"]
 [ext_resource type="AudioStream" path="res://assets/audio/ui/click.wav" id="6_cli"]
+[ext_resource type="Texture2D" path="res://assets/textures/ui/parchment_panel.png" id="tex_panel_q"]
+[ext_resource type="FontFile" path="res://assets/fonts/Cinzel.ttf" id="font_cinzel_q"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_QuitPanel"]
+texture = ExtResource("tex_panel_q")
+texture_margin_left = 105.0
+texture_margin_top = 105.0
+texture_margin_right = 105.0
+texture_margin_bottom = 105.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BtnRedNormal"]
+bg_color = Color(0.5, 0.1, 0.1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.1, 0.05, 0.02, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BtnRedHover"]
+bg_color = Color(0.6, 0.15, 0.15, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.9, 0.8, 0.5, 1)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_Add"]
 blend_mode = 1
@@ -138,3 +163,85 @@ volume_db = -5.0
 [node name="AudioClick" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_cli")
 volume_db = 0.0
+
+[node name="QuitConfirmPanel" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dimmer" type="ColorRect" parent="QuitConfirmPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="PanelContainer" type="PanelContainer" parent="QuitConfirmPanel"]
+custom_minimum_size = Vector2(500, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -150.0
+offset_right = 250.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_QuitPanel")
+
+[node name="Margin" type="MarginContainer" parent="QuitConfirmPanel/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBox" type="VBoxContainer" parent="QuitConfirmPanel/PanelContainer/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="Label" type="Label" parent="QuitConfirmPanel/PanelContainer/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.05, 0.02, 0.01, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.02, 0.01, 1)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = ExtResource("font_cinzel_q")
+theme_override_font_sizes/font_size = 28
+text = "ARE YOU SURE YOU WANT TO QUIT?"
+horizontal_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="QuitConfirmPanel/PanelContainer/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="YesBtn" type="Button" parent="QuitConfirmPanel/PanelContainer/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.82, 1)
+theme_override_fonts/font = ExtResource("font_cinzel_q")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/hover = SubResource("StyleBoxFlat_BtnRedHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnRedHover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_BtnRedNormal")
+text = "YES"
+
+[node name="NoBtn" type="Button" parent="QuitConfirmPanel/PanelContainer/Margin/VBox/HBox"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.82, 1)
+theme_override_fonts/font = ExtResource("font_cinzel_q")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/hover = SubResource("StyleBoxFlat_BtnRedHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnRedHover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_BtnRedNormal")
+text = "NO"

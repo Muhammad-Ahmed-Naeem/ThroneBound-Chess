@@ -8,12 +8,16 @@ extends Control
 @onready var audio_hover = $AudioHover
 @onready var audio_click = $AudioClick
 
+@onready var quit_confirm_panel = $QuitConfirmPanel
+@onready var quit_yes_btn = $QuitConfirmPanel/PanelContainer/Margin/VBox/HBox/YesBtn
+@onready var quit_no_btn = $QuitConfirmPanel/PanelContainer/Margin/VBox/HBox/NoBtn
+
 var _buttons: Array[Button] = []
 
 func _ready() -> void:
 	DisplayServer.window_set_title("Thronebound Chess")
 	
-	_buttons = [play_btn, settings_btn, quit_btn]
+	_buttons = [play_btn, settings_btn, quit_btn, quit_yes_btn, quit_no_btn]
 	
 	for btn in _buttons:
 		btn.pressed.connect(_on_button_pressed.bind(btn))
@@ -21,13 +25,23 @@ func _ready() -> void:
 		btn.mouse_exited.connect(_on_button_unhover.bind(btn))
 		btn.button_down.connect(_on_button_down.bind(btn))
 		
-		# Ensure glow is invisible initially
-		var glow = btn.get_node("Glow")
-		glow.modulate.a = 0.0
+		# Ensure glow is invisible initially (only main menu buttons have glow)
+		var glow = btn.get_node_or_null("Glow")
+		if glow:
+			glow.modulate.a = 0.0
+	
+	quit_confirm_panel.hide()
 	
 	# Start with background completely dark, then fade in
 	background.modulate = Color(0, 0, 0, 1)
 	_play_intro_animation()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		if quit_confirm_panel.visible:
+			quit_confirm_panel.hide()
+		else:
+			quit_confirm_panel.show()
 
 func _play_intro_animation() -> void:
 	var tween = create_tween()
@@ -35,22 +49,25 @@ func _play_intro_animation() -> void:
 
 func _on_button_hover(btn: Button) -> void:
 	audio_hover.play()
-	var glow = btn.get_node("Glow")
-	var tween = create_tween()
-	tween.tween_property(glow, "modulate:a", 0.6, 0.2).set_trans(Tween.TRANS_SINE)
+	var glow = btn.get_node_or_null("Glow")
+	if glow:
+		var tween = create_tween()
+		tween.tween_property(glow, "modulate:a", 0.6, 0.2).set_trans(Tween.TRANS_SINE)
 
 func _on_button_unhover(btn: Button) -> void:
-	var glow = btn.get_node("Glow")
-	var tween = create_tween()
-	tween.tween_property(glow, "modulate:a", 0.0, 0.2).set_trans(Tween.TRANS_SINE)
+	var glow = btn.get_node_or_null("Glow")
+	if glow:
+		var tween = create_tween()
+		tween.tween_property(glow, "modulate:a", 0.0, 0.2).set_trans(Tween.TRANS_SINE)
 
 func _on_button_down(btn: Button) -> void:
 	audio_click.play()
-	var glow = btn.get_node("Glow")
-	var tween = create_tween()
-	# Pulse brighter on click
-	tween.tween_property(glow, "modulate:a", 1.0, 0.05).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(glow, "modulate:a", 0.6, 0.1).set_trans(Tween.TRANS_SINE)
+	var glow = btn.get_node_or_null("Glow")
+	if glow:
+		var tween = create_tween()
+		# Pulse brighter on click
+		tween.tween_property(glow, "modulate:a", 1.0, 0.05).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(glow, "modulate:a", 0.6, 0.1).set_trans(Tween.TRANS_SINE)
 
 func _on_button_pressed(btn: Button) -> void:
 	# Small delay to allow the pulse animation and sound to register
@@ -61,4 +78,8 @@ func _on_button_pressed(btn: Button) -> void:
 	elif btn == settings_btn:
 		SceneTransition.change_scene("res://scenes/ui/settings_menu.tscn")
 	elif btn == quit_btn:
+		quit_confirm_panel.show()
+	elif btn == quit_yes_btn:
 		get_tree().quit()
+	elif btn == quit_no_btn:
+		quit_confirm_panel.hide()
