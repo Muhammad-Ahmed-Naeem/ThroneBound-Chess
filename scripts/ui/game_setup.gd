@@ -16,10 +16,17 @@ var _config = GameConfiguration.new()
 
 var style_normal: StyleBox
 var style_active: StyleBox
+var style_hover_normal: StyleBox
+var style_hover_active: StyleBox
+
+var color_dark = Color(0.05, 0.02, 0.01, 1)
+var color_light = Color(0.95, 0.9, 0.8, 1)
 
 func _ready() -> void:
 	style_normal = ai_btn.get_theme_stylebox("normal")
+	style_hover_normal = ai_btn.get_theme_stylebox("hover")
 	style_active = local_btn.get_theme_stylebox("normal")
+	style_hover_active = local_btn.get_theme_stylebox("hover")
 	
 	local_btn.pressed.connect(_on_local_pressed)
 	ai_btn.pressed.connect(_on_ai_pressed)
@@ -52,17 +59,37 @@ func _play_intro() -> void:
 	tween.tween_property(self, "modulate:a", 1.0, 0.4)
 	tween.tween_property(panel, "position:y", panel.position.y - 60, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
+func _set_button_active(btn: Button, active: bool) -> void:
+	if active:
+		btn.add_theme_stylebox_override("normal", style_active)
+		btn.add_theme_stylebox_override("hover", style_hover_active)
+		btn.add_theme_stylebox_override("pressed", style_active)
+		btn.add_theme_stylebox_override("focus", style_hover_active)
+		btn.add_theme_color_override("font_color", color_light)
+		btn.add_theme_color_override("font_hover_color", color_light)
+		btn.add_theme_color_override("font_pressed_color", color_light)
+		btn.add_theme_color_override("font_focus_color", color_light)
+	else:
+		btn.add_theme_stylebox_override("normal", style_normal)
+		btn.add_theme_stylebox_override("hover", style_hover_normal)
+		btn.add_theme_stylebox_override("pressed", style_hover_normal)
+		btn.add_theme_stylebox_override("focus", style_hover_normal)
+		btn.add_theme_color_override("font_color", color_dark)
+		btn.add_theme_color_override("font_hover_color", color_dark)
+		btn.add_theme_color_override("font_pressed_color", color_dark)
+		btn.add_theme_color_override("font_focus_color", color_dark)
+
 func _on_local_pressed() -> void:
 	_config.game_mode = GameConfiguration.GameMode.LOCAL_2_PLAYER
 	ai_options.visible = false
-	local_btn.add_theme_stylebox_override("normal", style_active)
-	ai_btn.add_theme_stylebox_override("normal", style_normal)
+	_set_button_active(local_btn, true)
+	_set_button_active(ai_btn, false)
 
 func _on_ai_pressed() -> void:
 	_config.game_mode = GameConfiguration.GameMode.VS_AI
 	ai_options.visible = true
-	ai_btn.add_theme_stylebox_override("normal", style_active)
-	local_btn.add_theme_stylebox_override("normal", style_normal)
+	_set_button_active(ai_btn, true)
+	_set_button_active(local_btn, false)
 
 func _on_back_pressed() -> void:
 	await get_tree().create_timer(0.15).timeout
