@@ -179,3 +179,157 @@ func play_impact_vfx(pos: Vector3) -> void:
 		if is_instance_valid(sparks): sparks.queue_free()
 		if is_instance_valid(smoke): smoke.queue_free()
 	)
+
+# --- Milestone 12: Signature Combat VFX Variants ---
+
+## Magical (arcane/Bishop) impact burst — blue-purple energy explosion.
+func play_magical_impact_vfx(pos: Vector3) -> void:
+	var flash = OmniLight3D.new()
+	flash.position = pos
+	flash.light_color = Color(0.4, 0.6, 1.0)
+	flash.light_energy = 10.0
+	flash.omni_range = 14.0
+	add_child(flash)
+
+	var core = MeshInstance3D.new()
+	var core_mesh = QuadMesh.new()
+	core_mesh.size = Vector2(2.0, 2.0)
+	core.mesh = core_mesh
+	var magic_mat = StandardMaterial3D.new()
+	magic_mat.albedo_color = Color(0.4, 0.7, 1.0, 1.0)
+	magic_mat.emission_enabled = true
+	magic_mat.emission = Color(0.2, 0.4, 1.0)
+	magic_mat.emission_energy_multiplier = 5.0
+	magic_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	magic_mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	magic_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	magic_mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	core.material_override = magic_mat
+	core.position = pos
+	add_child(core)
+
+	var magic_proc = _proc_mat.duplicate() as ParticleProcessMaterial
+	magic_proc.initial_velocity_min = 8.0
+	magic_proc.initial_velocity_max = 18.0
+	var magic_grad = Gradient.new()
+	magic_grad.set_color(0, Color(2.0, 2.5, 4.0, 1.0))
+	magic_grad.add_point(0.45, Color(0.5, 0.5, 2.5, 1.0))
+	magic_grad.set_color(1, Color(0.2, 0.2, 1.0, 0.0))
+	var magic_tex = GradientTexture1D.new()
+	magic_tex.gradient = magic_grad
+	magic_proc.color_ramp = magic_tex
+
+	var sparks = GPUParticles3D.new()
+	sparks.position = pos
+	sparks.process_material = magic_proc
+	sparks.draw_pass_1 = _spark_mesh
+	sparks.emitting = true
+	sparks.one_shot = true
+	sparks.explosiveness = 1.0
+	sparks.lifetime = 0.5
+	sparks.amount = 28
+	add_child(sparks)
+
+	var smoke = GPUParticles3D.new()
+	smoke.position = pos
+	smoke.process_material = _smoke_proc
+	smoke.draw_pass_1 = _smoke_mesh
+	smoke.emitting = true
+	smoke.one_shot = true
+	smoke.explosiveness = 0.85
+	smoke.lifetime = 1.0
+	smoke.amount = 8
+	add_child(smoke)
+
+	var t = get_tree().create_tween()
+	t.set_parallel(true)
+	t.tween_property(flash, "light_energy", 0.0, 0.25)
+	t.tween_property(core, "scale", Vector3(3.5, 3.5, 3.5), 0.18).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	t.tween_property(magic_mat, "albedo_color:a", 0.0, 0.22)
+
+	get_tree().create_timer(1.5).timeout.connect(func():
+		if is_instance_valid(flash): flash.queue_free()
+		if is_instance_valid(core): core.queue_free()
+		if is_instance_valid(sparks): sparks.queue_free()
+		if is_instance_valid(smoke): smoke.queue_free()
+	)
+
+
+## Physical (arrow/siege/Rook) impact — strong sparks, dust, no magical glow.
+func play_physical_impact_vfx(pos: Vector3) -> void:
+	var flash = OmniLight3D.new()
+	flash.position = pos
+	flash.light_color = Color(1.0, 0.9, 0.7)
+	flash.light_energy = 7.0
+	flash.omni_range = 12.0
+	add_child(flash)
+
+	var sparks = GPUParticles3D.new()
+	sparks.position = pos
+	sparks.process_material = _proc_mat
+	sparks.draw_pass_1 = _spark_mesh
+	sparks.emitting = true
+	sparks.one_shot = true
+	sparks.explosiveness = 1.0
+	sparks.lifetime = 0.35
+	sparks.amount = 40
+	add_child(sparks)
+
+	var smoke = GPUParticles3D.new()
+	smoke.position = pos
+	smoke.process_material = _smoke_proc
+	smoke.draw_pass_1 = _smoke_mesh
+	smoke.emitting = true
+	smoke.one_shot = true
+	smoke.explosiveness = 0.95
+	smoke.lifetime = 1.4
+	smoke.amount = 16
+	add_child(smoke)
+
+	var t = get_tree().create_tween()
+	t.tween_property(flash, "light_energy", 0.0, 0.18)
+
+	get_tree().create_timer(1.8).timeout.connect(func():
+		if is_instance_valid(flash): flash.queue_free()
+		if is_instance_valid(sparks): sparks.queue_free()
+		if is_instance_valid(smoke): smoke.queue_free()
+	)
+
+
+## Quick power-up flash used by Bishop (cast origin) and Rook (tower activation).
+func play_power_up_flash(pos: Vector3) -> void:
+	var flash = OmniLight3D.new()
+	flash.position = pos
+	flash.light_color = Color(0.6, 0.8, 1.0)
+	flash.light_energy = 5.0
+	flash.omni_range = 10.0
+	add_child(flash)
+
+	var t = get_tree().create_tween()
+	t.tween_property(flash, "light_energy", 0.0, 0.30).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+	get_tree().create_timer(0.5).timeout.connect(func():
+		if is_instance_valid(flash): flash.queue_free()
+	)
+
+
+## Subtle camera shake — drives the scene camera pivot if available.
+## strength: 0.0–1.0; max physical displacement is intentionally tiny (chess readability preserved).
+var _camera_pivot_ref: Node3D = null
+
+func set_camera_pivot(pivot: Node3D) -> void:
+	_camera_pivot_ref = pivot
+
+func play_camera_shake(strength: float) -> void:
+	if not is_instance_valid(_camera_pivot_ref):
+		return
+	var max_offset := clampf(strength * 0.06, 0.0, 0.12)
+	var origin := _camera_pivot_ref.position
+	var rand_x := randf_range(-max_offset, max_offset)
+	var rand_z := randf_range(-max_offset, max_offset)
+	var t = get_tree().create_tween()
+	t.tween_property(_camera_pivot_ref, "position",
+		origin + Vector3(rand_x, 0.0, rand_z), 0.04
+	).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	t.tween_property(_camera_pivot_ref, "position", origin, 0.14
+	).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)

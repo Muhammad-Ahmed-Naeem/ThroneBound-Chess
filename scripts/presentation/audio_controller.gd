@@ -9,6 +9,7 @@ func _ready() -> void:
 	_sfx_movement = _safe_load("res://assets/audio/movement.wav")
 	_sfx_capture = _safe_load("res://assets/audio/capture_impact.wav")
 	_sfx_graveyard = _safe_load("res://assets/audio/graveyard_tumble.wav")
+	_ready_combat()
 
 func _safe_load(path: String) -> AudioStream:
 	if ResourceLoader.exists(path):
@@ -49,3 +50,78 @@ func _play_3d(stream: AudioStream, pos: Vector3, event_name: String, volume_db: 
 	player.finished.connect(func():
 		player.queue_free()
 	)
+
+# --- Milestone 12: Signature Combat Audio Events ---
+# All methods gracefully fall back to an existing sound or silence if the specific
+# audio file is not present. A missing audio file must never break the capture sequence.
+
+var _sfx_spell_cast: AudioStream
+var _sfx_spell_impact: AudioStream
+var _sfx_arrow_launch: AudioStream
+var _sfx_arrow_impact: AudioStream
+var _sfx_sword_swing: AudioStream
+var _sfx_sword_impact: AudioStream
+var _sfx_spear_thrust: AudioStream
+var _sfx_horse_charge: AudioStream
+
+func _load_combat_sounds() -> void:
+	_sfx_spell_cast   = _safe_load("res://assets/audio/spell_cast.wav")
+	_sfx_spell_impact = _safe_load("res://assets/audio/spell_impact.wav")
+	_sfx_arrow_launch = _safe_load("res://assets/audio/arrow_launch.wav")
+	_sfx_arrow_impact = _safe_load("res://assets/audio/arrow_impact.wav")
+	_sfx_sword_swing  = _safe_load("res://assets/audio/sword_swing.wav")
+	_sfx_sword_impact = _safe_load("res://assets/audio/sword_impact.wav")
+	_sfx_spear_thrust = _safe_load("res://assets/audio/spear_thrust.wav")
+	_sfx_horse_charge = _safe_load("res://assets/audio/horse_charge.wav")
+
+# Called from _ready() to register combat sounds alongside existing sounds
+func _ready_combat() -> void:
+	_load_combat_sounds()
+
+# Bishop — magical cast sound (at spell origin)
+func play_spell_cast(pos: Vector3) -> void:
+	var stream = _sfx_spell_cast if _sfx_spell_cast != null else _sfx_capture
+	if stream != null:
+		_play_3d(stream, pos, "SpellCast", -4.0)
+
+# Bishop — magical impact on defender
+func play_spell_impact(pos: Vector3) -> void:
+	var stream = _sfx_spell_impact if _sfx_spell_impact != null else _sfx_capture
+	if stream != null:
+		_play_3d(stream, pos, "SpellImpact")
+
+# Rook — arrow/bolt launch from tower
+func play_arrow_launch(pos: Vector3) -> void:
+	var stream = _sfx_arrow_launch if _sfx_arrow_launch != null else _sfx_movement
+	if stream != null:
+		_play_3d(stream, pos, "ArrowLaunch", 4.0)
+
+# Rook — arrow/bolt physical impact on defender
+func play_arrow_impact(pos: Vector3) -> void:
+	var stream = _sfx_arrow_impact if _sfx_arrow_impact != null else _sfx_capture
+	if stream != null:
+		_play_3d(stream, pos, "ArrowImpact")
+
+# Queen / King — sword swing during attack
+func play_sword_swing(pos: Vector3) -> void:
+	var stream = _sfx_sword_swing if _sfx_sword_swing != null else null
+	if stream != null:
+		_play_3d(stream, pos, "SwordSwing", 2.0)
+
+# Queen / King — sword impact on contact
+func play_sword_impact(pos: Vector3) -> void:
+	var stream = _sfx_sword_impact if _sfx_sword_impact != null else _sfx_capture
+	if stream != null:
+		_play_3d(stream, pos, "SwordImpact")
+
+# Pawn — spear/thrust sound on contact
+func play_spear_thrust(pos: Vector3) -> void:
+	var stream = _sfx_spear_thrust if _sfx_spear_thrust != null else _sfx_capture
+	if stream != null:
+		_play_3d(stream, pos, "SpearThrust")
+
+# Knight — horse charge / heavy movement sound
+func play_horse_charge(pos: Vector3) -> void:
+	var stream = _sfx_horse_charge if _sfx_horse_charge != null else _sfx_movement
+	if stream != null:
+		_play_3d(stream, pos, "HorseCharge", 6.0)

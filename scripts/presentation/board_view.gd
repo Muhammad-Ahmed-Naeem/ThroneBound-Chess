@@ -68,6 +68,10 @@ func _ready() -> void:
 		camera.position = Vector3(0.0, 12.0, -9.0)
 		camera.look_at(_camera_pivot.global_position, Vector3.UP)
 		
+		# Milestone 12: register pivot with VFXController for combat camera shake
+		if _vfx_controller and _vfx_controller.has_method("set_camera_pivot"):
+			_vfx_controller.set_camera_pivot(_camera_pivot)
+	
 	if pause_menu:
 		pause_menu.restart_requested.connect(start_match)
 		pause_menu.main_menu_requested.connect(func(): SceneTransition.change_scene("res://scenes/ui/main_menu.tscn"))

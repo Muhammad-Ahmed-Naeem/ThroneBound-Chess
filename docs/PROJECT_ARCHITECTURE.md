@@ -136,3 +136,69 @@
 - **Presentation Seamlessness:** By routing AI decisions back through `ChessGame.try_move()`, AI moves automatically trigger `move_executed`, meaning AI captures and movements utilize the exact same animation, audio, and VFX systems built for humans without any duplicate code.
 - **Graceful Lifecycle Management:** Checks `_is_ai_turn()` and automatically requests moves without human input. Handles headless pauses securely (`stop` search on pause, `go` on resume) and cleans up processes safely when exiting back to the Main Menu. Missing binaries result in a logged error rather than an application crash.
 - **Licensing Constraint:** Because Stockfish is GPL-licensed, it communicates strictly over independent external process pipelines. Usage and distribution rules are correctly documented in `licenses/STOCKFISH_LICENSE.md`.
+
+## 18. Milestone 12 — Signature Piece Combat System
+
+### Core Philosophy
+All six chess piece types now have distinct visual identities during capture sequences. The Chess Core is completely unchanged — combat is 100% presentation-layer only.
+
+### Architecture Overview
+```
+CapturePresentationManager          [ORCHESTRATOR — unchanged public API]
+    │
+    ├── CaptureContext              [Internal data transfer object]
+    ├── CaptureProfile              [Per-piece timing configuration]
+    │
+    ├── CaptureChoreographyBase     [Abstract base with shared helpers]
+    │       ├── PawnCaptureChoreography
+    │       ├── KnightCaptureChoreography
+    │       ├── BishopCaptureChoreography
+    │       ├── RookCaptureChoreography
+    │       ├── QueenCaptureChoreography
+    │       └── KingCaptureChoreography
+    │
+    ├── ProjectileController        [Reusable visual projectile — Bishop + Rook]
+    └── DefenderReaction            [Reusable defeated-piece animation]
+```
+
+### Six Attack Identities
+
+| Piece | Identity | Mechanism | Duration |
+|-------|----------|-----------|----------|
+| **Pawn** | Infantry spear thrust | Backward lean → fast lunge → thrust snap | ~0.82s |
+| **Knight** | Mounted charge | Rear up → arc trajectory with live rotation → heavy impact | ~1.1s |
+| **Bishop** | Magical ranged spell | Stay on square → cast bob → magical orb projectile → advance | ~1.0s |
+| **Rook** | Siege tower arrow | Stay on square → power pulse → bolt projectile → advance | ~0.85s |
+| **Queen** | Elegant sword strike | Fast approach → sweeping slash rotation → elegant settle | ~0.95s |
+| **King** | Heavy dignified strike | Slow deliberate approach → strong lean → single slam → hold pose | ~1.15s |
+
+### Projectile System
+- **`ProjectileController`** — Reusable Node3D. No physics body. Tween-based arc or straight trajectory.
+- **MAGICAL** type: Glowing cyan orb with particle trail and pulsing OmniLight.
+- **PHYSICAL_ARROW** type: Narrow dark capsule mesh oriented along travel direction, subtle trail.
+- Both types call an impact callback on arrival and clean themselves up via deferred `queue_free`.
+
+### Defender Reaction System
+- **`DefenderReaction`** — Two reaction types: `PHYSICAL_MELEE` (low arc tumble) and `RANGED_IMPACT` (high upward burst).
+- Shared across all attacker types. No 6×6 combination explosion.
+
+### Promotion Safety
+`CapturePresentationManager._determine_attacker_type()` detects `PROMOTION` move type and hardcodes `PAWN` as the choreography selection, ensuring a promoting pawn always plays the Pawn attack animation even after `moving_piece.type` has been mutated to the promoted type.
+
+### En Passant Support
+`CaptureContext` uses `move.captured_piece.position` (not `move.to_position`) to compute `defender_world`. All choreographies target the actual captured pawn position, not the destination square.
+
+### Audio Integration
+8 new audio events added to `AudioController` with CC0-licensed Kenney assets. All events gracefully fall back to silence or the existing `capture_impact.wav` if files are missing. Missing audio never breaks a capture sequence.
+
+### VFX Additions (VFXController)
+- `play_magical_impact_vfx()` — Blue-purple arcane burst for Bishop
+- `play_physical_impact_vfx()` — Heavy sparks/dust for Rook
+- `play_power_up_flash()` — Light pulse for cast/activation (Bishop + Rook)
+- `play_camera_shake()` — Subtle pivot shake per impact strength
+
+### Chess Core Modifications
+**None.** Zero modifications to `BoardState`, `ChessPiece`, `ChessMove`, `MoveGenerator`, `MoveExecutor`, `ChessRules`, `GameHistory`, or `ChessGame`.
+
+### Asset Licensing
+All externally sourced audio is CC0 (Kenney.nl). Full documentation in `licenses/ASSET_SOURCES.md`.

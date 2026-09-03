@@ -53,6 +53,25 @@ func reset_visual_transform() -> void:
 	_mesh_instance.rotation = get_base_rotation()
 	_mesh_instance.scale = Vector3(_mesh_instance.scale.x, _mesh_instance.scale.y, _mesh_instance.scale.z) # Keep calibrated scale
 
+# --- Milestone 12: Combat Presentation Helpers ---
+
+## World-space center of this piece. Convenience wrapper over global_position.
+func get_world_position() -> Vector3:
+	return global_position
+
+## Suggested world-space origin for projectile spawning — slightly above piece center.
+## Choreographies should use this rather than hardcoding Y offsets.
+func get_projectile_origin() -> Vector3:
+	return global_position + Vector3(0.0, 1.1, 0.0)
+
+## Instantly rotate mesh to face a world-space direction (Y-axis only).
+## Preserves existing X/Z rotation of the mesh (calibrated base offsets).
+func face_direction(world_dir: Vector3) -> void:
+	world_dir.y = 0.0
+	if world_dir.length_squared() < 0.0001:
+		return
+	_mesh_instance.rotation.y = atan2(world_dir.x, world_dir.z)
+
 func trigger_impact_shake() -> Tween:
 	var t = get_tree().create_tween()
 	var original_scale = _mesh_instance.scale
