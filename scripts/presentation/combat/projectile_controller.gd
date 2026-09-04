@@ -69,15 +69,15 @@ func _build_magical() -> void:
 	# Core emissive orb
 	_mesh = MeshInstance3D.new()
 	var sphere = SphereMesh.new()
-	sphere.radius = 0.20
-	sphere.height = 0.40
+	sphere.radius = 0.25
+	sphere.height = 0.50
 	_mesh.mesh = sphere
 
 	var mat = StandardMaterial3D.new()
-	mat.albedo_color = Color(0.4, 0.8, 1.0, 1.0)
+	mat.albedo_color = Color(0.4, 0.9, 1.0, 1.0)
 	mat.emission_enabled = true
-	mat.emission = Color(0.3, 0.6, 1.0)
-	mat.emission_energy_multiplier = 6.0
+	mat.emission = Color(0.2, 0.7, 1.0)
+	mat.emission_energy_multiplier = 8.0
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
@@ -87,56 +87,173 @@ func _build_magical() -> void:
 	# Outer halo (slightly larger, more transparent)
 	var halo = MeshInstance3D.new()
 	var halo_sphere = SphereMesh.new()
-	halo_sphere.radius = 0.32
-	halo_sphere.height = 0.64
+	halo_sphere.radius = 0.40
+	halo_sphere.height = 0.80
 	halo.mesh = halo_sphere
 	var halo_mat = StandardMaterial3D.new()
-	halo_mat.albedo_color = Color(0.2, 0.5, 1.0, 0.35)
+	halo_mat.albedo_color = Color(0.1, 0.4, 1.0, 0.4)
 	halo_mat.emission_enabled = true
-	halo_mat.emission = Color(0.1, 0.3, 0.8)
-	halo_mat.emission_energy_multiplier = 3.0
+	halo_mat.emission = Color(0.1, 0.3, 0.9)
+	halo_mat.emission_energy_multiplier = 4.0
 	halo_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	halo_mat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	halo_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	halo.material_override = halo_mat
 	add_child(halo)
 
+	# Magical Energy Rings (AAA effect)
+	var ring1 = MeshInstance3D.new()
+	var torus1 = TorusMesh.new()
+	torus1.inner_radius = 0.45
+	torus1.outer_radius = 0.50
+	ring1.mesh = torus1
+	ring1.material_override = halo_mat
+	add_child(ring1)
+
+	var ring2 = MeshInstance3D.new()
+	var torus2 = TorusMesh.new()
+	torus2.inner_radius = 0.35
+	torus2.outer_radius = 0.40
+	ring2.mesh = torus2
+	ring2.material_override = mat
+	ring2.rotation.x = PI / 2.0
+	add_child(ring2)
+
 	# Glow point light
 	_glow_light = OmniLight3D.new()
-	_glow_light.light_color = Color(0.4, 0.7, 1.0)
-	_glow_light.light_energy = 3.5
-	_glow_light.omni_range = 6.0
+	_glow_light.light_color = Color(0.3, 0.7, 1.0)
+	_glow_light.light_energy = 5.0
+	_glow_light.omni_range = 8.0
 	add_child(_glow_light)
 
 	# Trail particles
 	_trail_particles = _make_trail_particles_magical()
 	add_child(_trail_particles)
 
-	# Pulse animation on the orb
+	# Pulse & Spin animation on the orb and rings
 	var pulse = create_tween().set_loops()
-	pulse.tween_property(_mesh, "scale", Vector3(1.2, 1.2, 1.2), 0.18).set_trans(Tween.TRANS_SINE)
-	pulse.tween_property(_mesh, "scale", Vector3(0.85, 0.85, 0.85), 0.18).set_trans(Tween.TRANS_SINE)
+	pulse.tween_property(_mesh, "scale", Vector3(1.3, 1.3, 1.3), 0.15).set_trans(Tween.TRANS_SINE)
+	pulse.tween_property(_mesh, "scale", Vector3(0.8, 0.8, 0.8), 0.15).set_trans(Tween.TRANS_SINE)
+	
+	var spin1 = create_tween().set_loops()
+	spin1.tween_property(ring1, "rotation", Vector3(PI, PI*2.0, 0), 0.6).as_relative()
+	
+	var spin2 = create_tween().set_loops()
+	spin2.tween_property(ring2, "rotation", Vector3(0, PI*2.0, PI), 0.4).as_relative()
 
 
 func _make_trail_particles_magical() -> GPUParticles3D:
 	var proc = ParticleProcessMaterial.new()
-	proc.direction = Vector3(0, 0, -1)  # will be rotated with node
-	proc.spread = 25.0
-	proc.initial_velocity_min = 0.5
-	proc.initial_velocity_max = 1.2
-	proc.gravity = Vector3(0, 0.4, 0)
-	proc.scale_min = 0.08
-	proc.scale_max = 0.18
+	proc.direction = Vector3(0, 0, -1)
+	proc.spread = 15.0
+	proc.initial_velocity_min = 1.0
+	proc.initial_velocity_max = 2.5
+	proc.gravity = Vector3(0, 0.2, 0)
+	proc.scale_min = 0.1
+	proc.scale_max = 0.3
 
 	var grad = Gradient.new()
-	grad.set_color(0, Color(0.4, 0.8, 1.0, 0.9))
-	grad.set_color(1, Color(0.1, 0.2, 0.8, 0.0))
+	grad.set_color(0, Color(0.3, 0.8, 1.0, 1.0))
+	grad.add_point(0.2, Color(0.1, 0.4, 1.0, 0.8))
+	grad.set_color(1, Color(0.0, 0.1, 0.8, 0.0))
 	var gtex = GradientTexture1D.new()
 	gtex.gradient = grad
 	proc.color_ramp = gtex
 
 	var qmesh = QuadMesh.new()
-	qmesh.size = Vector2(0.14, 0.14)
+	qmesh.size = Vector2(0.2, 0.2)
+	var tmat = StandardMaterial3D.new()
+	tmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	tmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	tmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	tmat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	tmat.vertex_color_use_as_albedo = true
+	qmesh.material = tmat
+
+	var ps = GPUParticles3D.new()
+	ps.process_material = proc
+	ps.draw_pass_1 = qmesh
+	ps.amount = 40
+	ps.lifetime = 0.4
+	ps.explosiveness = 0.0
+	ps.emitting = true
+	return ps
+
+
+# ─── PHYSICAL ARROW / BOLT ────────────────────────────────────────────────────
+
+func _build_arrow() -> void:
+	# Arrow shaft — properly scaled CylinderMesh
+	_mesh = MeshInstance3D.new()
+	var shaft = CylinderMesh.new()
+	shaft.top_radius = 0.03
+	shaft.bottom_radius = 0.03
+	shaft.height = 1.0
+	_mesh.mesh = shaft
+	_mesh.rotation.x = PI / 2.0  # Align along Z axis
+
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = Color(0.22, 0.15, 0.08)  # rich dark wood
+	mat.roughness = 0.9
+	mat.metallic = 0.0
+	_mesh.material_override = mat
+	add_child(_mesh)
+
+	# Arrowhead — sharp cone
+	var tip = MeshInstance3D.new()
+	var tip_mesh = CylinderMesh.new()
+	tip_mesh.top_radius = 0.0
+	tip_mesh.bottom_radius = 0.06
+	tip_mesh.height = 0.25
+	tip.mesh = tip_mesh
+	var tip_mat = StandardMaterial3D.new()
+	tip_mat.albedo_color = Color(0.6, 0.65, 0.7)  # bright steel
+	tip_mat.metallic = 0.9
+	tip_mat.roughness = 0.2
+	tip.material_override = tip_mat
+	tip.position = Vector3(0, 0, -0.6)  # at the front
+	tip.rotation.x = PI / 2.0 # align with shaft
+	add_child(tip)
+
+	# Fletching (feathers) — 3 fins
+	var fletch_mat = StandardMaterial3D.new()
+	fletch_mat.albedo_color = Color(0.9, 0.9, 0.9) # white feathers
+	for i in range(3):
+		var fin = MeshInstance3D.new()
+		var fin_mesh = BoxMesh.new()
+		fin_mesh.size = Vector3(0.02, 0.15, 0.25)
+		fin.mesh = fin_mesh
+		fin.material_override = fletch_mat
+		fin.position = Vector3(0, 0, 0.4) # back of shaft
+		fin.rotation.z = i * (PI * 2.0 / 3.0)
+		# Push outward slightly
+		fin.position += Vector3(0, 0.05, 0).rotated(Vector3(0, 0, 1), fin.rotation.z)
+		add_child(fin)
+
+	# High velocity streak particles
+	_trail_particles = _make_trail_particles_arrow()
+	add_child(_trail_particles)
+
+
+func _make_trail_particles_arrow() -> GPUParticles3D:
+	var proc = ParticleProcessMaterial.new()
+	proc.direction = Vector3(0, 0, 1)
+	proc.spread = 2.0
+	proc.initial_velocity_min = 0.5
+	proc.initial_velocity_max = 1.0
+	proc.gravity = Vector3(0, 0, 0)
+	proc.scale_min = 0.03
+	proc.scale_max = 0.08
+
+	var grad = Gradient.new()
+	grad.set_color(0, Color(1.0, 1.0, 1.0, 0.5))
+	grad.set_color(1, Color(0.5, 0.5, 0.5, 0.0))
+	var gtex = GradientTexture1D.new()
+	gtex.gradient = grad
+	proc.color_ramp = gtex
+
+	var qmesh = QuadMesh.new()
+	qmesh.size = Vector2(0.1, 0.1)
 	var tmat = StandardMaterial3D.new()
 	tmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	tmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
@@ -149,83 +266,7 @@ func _make_trail_particles_magical() -> GPUParticles3D:
 	ps.process_material = proc
 	ps.draw_pass_1 = qmesh
 	ps.amount = 20
-	ps.lifetime = 0.35
-	ps.explosiveness = 0.0
-	ps.emitting = true
-	return ps
-
-
-# ─── PHYSICAL ARROW / BOLT ────────────────────────────────────────────────────
-
-func _build_arrow() -> void:
-	# Arrow shaft — narrow capsule oriented along local Z
-	_mesh = MeshInstance3D.new()
-	var cap = CapsuleMesh.new()
-	cap.radius = 0.045
-	cap.height = 0.80
-	_mesh.mesh = cap
-	# Rotate capsule 90° so its long axis aligns with local Z (travel direction)
-	_mesh.rotation.x = PI / 2.0
-
-	var mat = StandardMaterial3D.new()
-	mat.albedo_color = Color(0.28, 0.20, 0.12)  # dark wood
-	mat.roughness = 0.85
-	mat.metallic = 0.1
-	_mesh.material_override = mat
-	add_child(_mesh)
-
-	# Arrowhead — small cone, attached at front
-	var tip = MeshInstance3D.new()
-	# Use a small sphere as the tip for simplicity (no CylinderMesh cone top available simply)
-	var tip_mesh = SphereMesh.new()
-	tip_mesh.radius = 0.07
-	tip_mesh.height = 0.18
-	tip.mesh = tip_mesh
-	var tip_mat = StandardMaterial3D.new()
-	tip_mat.albedo_color = Color(0.55, 0.55, 0.60)  # dark iron
-	tip_mat.metallic = 0.8
-	tip_mat.roughness = 0.3
-	tip.material_override = tip_mat
-	tip.position = Vector3(0, 0, -0.44)  # front of the shaft
-	add_child(tip)
-
-	# Subtle directional trail for readability
-	_trail_particles = _make_trail_particles_arrow()
-	add_child(_trail_particles)
-
-
-func _make_trail_particles_arrow() -> GPUParticles3D:
-	var proc = ParticleProcessMaterial.new()
-	proc.direction = Vector3(0, 0, 1)  # behind arrow
-	proc.spread = 8.0
-	proc.initial_velocity_min = 0.3
-	proc.initial_velocity_max = 0.8
-	proc.gravity = Vector3(0, -2.0, 0)
-	proc.scale_min = 0.05
-	proc.scale_max = 0.12
-
-	var grad = Gradient.new()
-	grad.set_color(0, Color(0.9, 0.75, 0.4, 0.7))
-	grad.set_color(1, Color(0.3, 0.2, 0.1, 0.0))
-	var gtex = GradientTexture1D.new()
-	gtex.gradient = grad
-	proc.color_ramp = gtex
-
-	var qmesh = QuadMesh.new()
-	qmesh.size = Vector2(0.09, 0.09)
-	var tmat = StandardMaterial3D.new()
-	tmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	tmat.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
-	tmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	tmat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
-	tmat.vertex_color_use_as_albedo = true
-	qmesh.material = tmat
-
-	var ps = GPUParticles3D.new()
-	ps.process_material = proc
-	ps.draw_pass_1 = qmesh
-	ps.amount = 12
-	ps.lifetime = 0.25
+	ps.lifetime = 0.15
 	ps.explosiveness = 0.0
 	ps.emitting = true
 	return ps

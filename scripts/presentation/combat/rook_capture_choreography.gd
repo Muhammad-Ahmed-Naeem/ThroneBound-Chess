@@ -58,55 +58,73 @@ func _launch_arrow(ctx: CaptureContext) -> void:
 		_finish(ctx)
 		return
 
-	# Projectile spawns from the top of the tower mesh
-	var spawn_pos := attacker.global_position + Vector3(0, 1.8, 0)
-
-	# Audio: arrow launch
+	# Audio: arrow launch (play once for the volley)
+	var spawn_pos_center := attacker.global_position + Vector3(0, 1.8, 0)
 	if ctx.audio != null and ctx.audio.has_method("play_arrow_launch"):
-		ctx.audio.play_arrow_launch(spawn_pos)
+		ctx.audio.play_arrow_launch(spawn_pos_center)
 
-	# Launch the physical bolt
-	ProjectileController.launch(
-		attacker.get_parent(),
-		spawn_pos,
-		ctx.defender_world + Vector3(0, 0.5, 0),  # aim at lower center of defender
-		_profile.projectile_duration,
-		ProjectileController.ProjectileType.PHYSICAL_ARROW,
-		func(): _on_projectile_impact(ctx),
-		_profile.projectile_arc_height,  # 0 = straight
-		ctx.vfx,
-		ctx.audio
-	)
+	# Calculate perpendicular offset for the spread
+	var right_dir := Vector3(-ctx.attack_dir.z, 0, ctx.attack_dir.x).normalized()
+	
+	# Fire a volley of 3 arrows (left, center, right)
+	var offsets = [-0.4, 0.0, 0.4]
+	var delays = [0.0, 0.05, 0.1] # Slight staggering for AAA feel
+
+	for i in range(3):
+		var offset = right_dir * offsets[i]
+		var spawn_pos = spawn_pos_center + offset
+		var target_pos = ctx.defender_world + Vector3(0, 0.5, 0) + (offset * 0.5) # slightly spread out on target too
+		
+		# We only want the first arrow to trigger the main sequence advancement
+		var is_first = (i == 0)
+		var impact_callback = func(): _on_projectile_impact(ctx, is_first, target_pos)
+
+		var t = attacker.get_tree().create_tween()
+		t.tween_interval(delays[i])
+		t.tween_callback(func():
+			ProjectileController.launch(
+				attacker.get_parent(),
+				spawn_pos,
+				target_pos,
+				_profile.projectile_duration,
+				ProjectileController.ProjectileType.PHYSICAL_ARROW,
+				impact_callback,
+				_profile.projectile_arc_height,
+				ctx.vfx,
+				ctx.audio
+			)
+		)
 
 
-func _on_projectile_impact(ctx: CaptureContext) -> void:
-	# Physical impact VFX at defender position
-	_physical_impact_vfx(ctx, ctx.defender_world)
-	_camera_shake(ctx, _profile.camera_shake_strength)
+func _on_projectile_impact(ctx: CaptureContext, is_main: bool, hit_pos: Vector3) -> void:
+	# Physical impact VFX at the specific hit position
+	_physical_impact_vfx(ctx, hit_pos)
+	_camera_shake(ctx, _profile.camera_shake_strength * (1.0 if is_main else 0.5))
 
 	# Audio: arrow/bolt impact
 	if ctx.audio != null and ctx.audio.has_method("play_arrow_impact"):
-		ctx.audio.play_arrow_impact(ctx.defender_world)
+		ctx.audio.play_arrow_impact(hit_pos)
 
-	# Trigger defender reaction (ranged — stronger upward burst)
-	DefenderReaction.react(
-		ctx.defender,
-		DefenderReaction.ReactionType.RANGED_IMPACT,
-		ctx.graveyard_target
-	)
+	if is_main:
+		# Trigger defender reaction (ranged — stronger upward burst) only on the first main hit
+		DefenderReaction.react(
+			ctx.defender,
+			DefenderReaction.ReactionType.RANGED_IMPACT,
+			ctx.graveyard_target
+		)
 
-	if ctx.audio != null:
-		ctx.audio.play_graveyard_tumble(ctx.graveyard_target)
+		if ctx.audio != null:
+			ctx.audio.play_graveyard_tumble(ctx.graveyard_target)
 
-	# Brief hold then advance tower to destination
-	var attacker := ctx.attacker
-	if not is_instance_valid(attacker):
-		_finish(ctx)
-		return
+		# Brief hold then advance tower to destination
+		var attacker := ctx.attacker
+		if not is_instance_valid(attacker):
+			_finish(ctx)
+			return
 
-	var t := attacker.get_tree().create_tween()
-	t.tween_interval(_profile.impact_hold)
-	t.tween_callback(func(): _advance_to_destination(ctx))
+		var t := attacker.get_tree().create_tween()
+		t.tween_interval(_profile.impact_hold)
+		t.tween_callback(func(): _advance_to_destination(ctx))
 
 
 func _advance_to_destination(ctx: CaptureContext) -> void:

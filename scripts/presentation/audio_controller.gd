@@ -21,10 +21,10 @@ func play_movement(pos: Vector3) -> void:
 	_play_3d(_sfx_movement, pos, "Movement", 8.0) # Boosted volume
 
 func play_capture_impact(pos: Vector3) -> void:
-	_play_3d(_sfx_capture, pos, "Capture Impact")
+	pass # Removed explosion sound as requested
 
 func play_graveyard_tumble(pos: Vector3) -> void:
-	_play_3d(_sfx_graveyard, pos, "Graveyard Tumble")
+	pass # Removed explosion-like sounds
 
 func _play_3d(stream: AudioStream, pos: Vector3, event_name: String, volume_db: float = 0.0) -> void:
 	if stream == null:
@@ -80,13 +80,13 @@ func _ready_combat() -> void:
 
 # Bishop — magical cast sound (at spell origin)
 func play_spell_cast(pos: Vector3) -> void:
-	var stream = _sfx_spell_cast if _sfx_spell_cast != null else _sfx_capture
+	var stream = _sfx_spell_cast
 	if stream != null:
 		_play_3d(stream, pos, "SpellCast", -4.0)
 
 # Bishop — magical impact on defender
 func play_spell_impact(pos: Vector3) -> void:
-	var stream = _sfx_spell_impact if _sfx_spell_impact != null else _sfx_capture
+	var stream = _sfx_spell_impact
 	if stream != null:
 		_play_3d(stream, pos, "SpellImpact")
 
@@ -98,25 +98,25 @@ func play_arrow_launch(pos: Vector3) -> void:
 
 # Rook — arrow/bolt physical impact on defender
 func play_arrow_impact(pos: Vector3) -> void:
-	var stream = _sfx_arrow_impact if _sfx_arrow_impact != null else _sfx_capture
+	var stream = _sfx_arrow_impact
 	if stream != null:
 		_play_3d(stream, pos, "ArrowImpact")
 
 # Queen / King — sword swing during attack
 func play_sword_swing(pos: Vector3) -> void:
-	var stream = _sfx_sword_swing if _sfx_sword_swing != null else null
+	var stream = _sfx_sword_swing
 	if stream != null:
 		_play_3d(stream, pos, "SwordSwing", 2.0)
 
 # Queen / King — sword impact on contact
 func play_sword_impact(pos: Vector3) -> void:
-	var stream = _sfx_sword_impact if _sfx_sword_impact != null else _sfx_capture
+	var stream = _sfx_sword_impact
 	if stream != null:
 		_play_3d(stream, pos, "SwordImpact")
 
 # Pawn — spear/thrust sound on contact
 func play_spear_thrust(pos: Vector3) -> void:
-	var stream = _sfx_spear_thrust if _sfx_spear_thrust != null else _sfx_capture
+	var stream = _sfx_spear_thrust
 	if stream != null:
 		_play_3d(stream, pos, "SpearThrust")
 
