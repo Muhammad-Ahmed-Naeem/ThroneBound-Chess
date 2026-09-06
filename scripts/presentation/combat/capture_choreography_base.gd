@@ -138,6 +138,8 @@ func _generic_fallback(ctx: CaptureContext) -> void:
 	t.tween_callback(func():
 		ctx.attacker.trigger_impact_shake()
 		_impact_vfx(ctx, ctx.target_world)
+		if ctx.audio != null:
+			ctx.audio.play_defeat_clash(ctx.defender_world)
 		DefenderReaction.react(ctx.defender, DefenderReaction.ReactionType.PHYSICAL_MELEE, ctx.graveyard_target)
 		if ctx.audio:
 			ctx.audio.play_capture_impact(ctx.target_world)

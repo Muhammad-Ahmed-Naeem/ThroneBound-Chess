@@ -62,6 +62,8 @@ func _execute_impl(ctx: CaptureContext) -> void:
 		elif ctx.audio != null:
 			ctx.audio.play_capture_impact(ctx.defender_world)
 
+		if ctx.audio != null:
+			ctx.audio.play_defeat_clash(ctx.defender_world)
 		DefenderReaction.react(
 			ctx.defender,
 			DefenderReaction.ReactionType.PHYSICAL_MELEE,

@@ -63,16 +63,18 @@ var _sfx_sword_swing: AudioStream
 var _sfx_sword_impact: AudioStream
 var _sfx_spear_thrust: AudioStream
 var _sfx_horse_charge: AudioStream
+var _sfx_defeat_clash: AudioStream
 
 func _load_combat_sounds() -> void:
-	_sfx_spell_cast   = _safe_load("res://assets/audio/spell_cast.wav")
-	_sfx_spell_impact = _safe_load("res://assets/audio/spell_impact.wav")
-	_sfx_arrow_launch = _safe_load("res://assets/audio/arrow_launch.wav")
-	_sfx_arrow_impact = _safe_load("res://assets/audio/arrow_impact.wav")
-	_sfx_sword_swing  = _safe_load("res://assets/audio/sword_swing.wav")
-	_sfx_sword_impact = _safe_load("res://assets/audio/sword_impact.wav")
-	_sfx_spear_thrust = _safe_load("res://assets/audio/spear_thrust.wav")
-	_sfx_horse_charge = _safe_load("res://assets/audio/horse_charge.wav")
+	_sfx_spell_cast   = _safe_load("res://assets/audio/spell_cast.ogg")
+	_sfx_spell_impact = _safe_load("res://assets/audio/spell_impact.ogg")
+	_sfx_arrow_launch = _safe_load("res://assets/audio/arrow_launch.ogg")
+	_sfx_arrow_impact = _safe_load("res://assets/audio/arrow_impact.ogg")
+	_sfx_sword_swing  = _safe_load("res://assets/audio/sword_swing.ogg")
+	_sfx_sword_impact = _safe_load("res://assets/audio/sword_impact.ogg")
+	_sfx_spear_thrust = _safe_load("res://assets/audio/spear_thrust.ogg")
+	_sfx_horse_charge = _safe_load("res://assets/audio/horse_charge.ogg")
+	_sfx_defeat_clash = _safe_load("res://assets/audio/defeat_clash.ogg")
 
 # Called from _ready() to register combat sounds alongside existing sounds
 func _ready_combat() -> void:
@@ -119,6 +121,12 @@ func play_spear_thrust(pos: Vector3) -> void:
 	var stream = _sfx_spear_thrust
 	if stream != null:
 		_play_3d(stream, pos, "SpearThrust")
+
+# Generic defeat clash (played when any piece is beaten)
+func play_defeat_clash(pos: Vector3) -> void:
+	var stream = _sfx_defeat_clash
+	if stream != null:
+		_play_3d(stream, pos, "DefeatClash")
 
 # Knight — horse charge / heavy movement sound
 func play_horse_charge(pos: Vector3) -> void:

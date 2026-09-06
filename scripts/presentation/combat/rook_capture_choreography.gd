@@ -107,6 +107,8 @@ func _on_projectile_impact(ctx: CaptureContext, is_main: bool, hit_pos: Vector3)
 
 	if is_main:
 		# Trigger defender reaction (ranged — stronger upward burst) only on the first main hit
+		if ctx.audio != null:
+			ctx.audio.play_defeat_clash(ctx.defender_world)
 		DefenderReaction.react(
 			ctx.defender,
 			DefenderReaction.ReactionType.RANGED_IMPACT,

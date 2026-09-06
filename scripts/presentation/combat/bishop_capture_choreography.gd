@@ -97,6 +97,8 @@ func _on_projectile_impact(ctx: CaptureContext) -> void:
 		ctx.audio.play_spell_impact(ctx.defender_world)
 
 	# Trigger defender reaction
+	if ctx.audio != null:
+		ctx.audio.play_defeat_clash(ctx.defender_world)
 	DefenderReaction.react(
 		ctx.defender,
 		DefenderReaction.ReactionType.RANGED_IMPACT,
