@@ -74,3 +74,22 @@ The following audio events fall back gracefully to existing sounds or silence:
 | `horse_charge` | `movement.wav` | footstep_wood.ogg deployed for actual use |
 
 All audio loading uses `_safe_load()` with graceful null fallback — a missing file never crashes or breaks a capture sequence.
+
+---
+
+### 4. OpenGameArt Sword Sounds
+
+**Asset:** 20 Sword Sound Effects (Attacks and Clashes)  
+**Creator:** starninjas  
+**Source URL:** https://opengameart.org/content/20-sword-sound-effects-attacks-and-clashes  
+**License:** CC0 1.0 Universal (Public Domain Dedication)  
+**Commercial use permitted:** Yes — fully public domain, no restrictions  
+**Attribution required:** No (attribution appreciated but not required)  
+**Modification permitted:** Yes  
+**Redistribution requirements:** None  
+
+**Files used from this pack:**
+
+| Project Filename | Original Filename | Purpose |
+|-----------------|------------------|---------|
+| `defeat_clash.ogg` | `sword_clash.1.ogg` | Sharp, realistic sword clash when any piece is defeated |
